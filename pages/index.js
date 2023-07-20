@@ -2,6 +2,11 @@ import Link from "next/link";
 import Layout from "../components/layout"
 
 export default function Home() {
+  <div>
+    <head>
+      <title>Home</title>
+    </head>
+  </div>
   return (
     <div>
       <Layout/>

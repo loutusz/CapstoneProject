@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
+import {FcGoogle} from 'react-icons/fc'
 import Link from "next/link";
+import { Head } from 'next/document';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -30,11 +32,123 @@ export default function RegisterPage() {
         // Lakukan proses pendaftaran dengan Google di sini
         console.log('Melakukan pendaftaran dengan Google');
       };
-    
+  
       return (
-        <div className="flex justify-center items-center h-screen">
-          <form onSubmit={handleSubmit} className="max-w-md w-full px-6 py-8 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-center mb-6">Form Pendaftaran</h2>
+        <div className="flex flex-col justify-center items-center py-2 h-screen bg-slate-200">
+          
+          {/* <form onSubmit={handleSubmit} > */} 
+            <div className="flex flex-col items-center justify-center w-full flex-1 px-35 py-15 text-center">
+              <div className=" bg-gray-50  rounded-2xl flex w-2/3 max-w-4xl shadow-2xl">
+
+              {/* Welcome */}
+                <div className="text-black w-3/5 bg-cyan-100 rounded-tl-2xl rounded-bl-2xl p-10">
+                  <h2 className="text-3xl font-bold mt-6 text-left">Welcome to JICO</h2>
+                  <p className="text-xs mt-4 text-left">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec ultricies nisi. 
+                  Suspendisse pulvinar viverra nibh vel ultricies. Mauris tincidunt mollis diam,
+                  at mollis enim aliquet eget. Fusce eros neque, pharetra eget tincidunt in,
+                  tincidunt nec tellus. 
+                  </p>
+                </div>
+
+              {/* SignUp */}
+                <div className="text-black p-9 w-4/5">
+                  <h2 className="text-3xl font-semibold mb-3">Sign Up</h2>
+                  
+                  {/* Name */}
+                     <div className="mt-6 mb-4 mx-auto w-4/5">
+                        <label htmlFor="name" className="block mb-2 font-medium text-black"></label>
+                        <input
+                          type="text"
+                          name="name"
+                          placeholder="Name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                          required
+                        />
+                      </div>
+                   {/* Username */}
+                      <div className="mb-4 mx-auto w-4/5">
+                        <label htmlFor="username" className="block mb-2 font-medium text-black"></label>
+                        <input
+                          type="text"
+                          name="username"
+                          placeholder="Username"
+                          value={formData.username}
+                          onChange={handleChange}
+                          className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                          required
+                        />
+                      </div>
+                      {/* Email */}
+                      <div className="mb-4 mx-auto w-4/5">
+                        <label htmlFor="email" className="block mb-2 font-medium text-black"></label>
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder="Email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                          required
+                        />
+                      </div>
+                    {/* Password */}
+                    <div className="mb-4 mx-auto w-4/5">
+                      <label htmlFor="password" className="block mb-2 font-medium text-black"></label>
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                        required
+                      />
+                     </div>
+
+                    {/* Checkbox */}
+                    <div className="flex w-64 mb-5 items-center mx-auto">
+                      <label htmlFor="remember" className="flex items-center mt-2 text-justify text-xs">
+                        <input
+                          type="checkbox"
+                          id="remember"
+                          name="remember"
+                          className="mr-2"
+                        />
+                        I’ve read and agree with terms of service and our privacy policy
+                      </label>                   
+                    </div>
+
+                     {/* Button Submit */}
+                  <div className="text-center mb-3">
+                    <button type="submit" className="bg-blue-500 text-white w-4/5 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">Register</button>
+                  </div>
+
+                  <p className="text-sm">or Connect With</p>
+
+                  {/* Button Google Regist */}
+                  <div className="flex flex-col items-center">
+                    <button onClick={handleGoogleRegistration} className="bg-gray-100 w-56 rounded-sm px-4 py-2 flex items-center mt-2 hover:bg-gray-400 transition-colors duration-200" ><FcGoogle size="25px" className="mr-3 "/> Sign Up With Google</button>
+                  </div>   
+
+                  {/* Sign in */}
+                  <div className="flex flex-col items-center mt-3">
+                    <p>Already a member?
+                      <a href='/loginPage' className="text-blue-700 font-semibold"> Sign In</a>
+                    </p>                  
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+             {/* </form> */}
+
+            {/* <main className="flex flex-col items-center jus">
+            <div className="bg-white rounded-2xl shadow-2xl">
+            <h2 className="text-black font-bold text-3xl text-right mb-">Sign up</h2>
+            <h2 className="font-semibold text-xl text-black">Welcome to JICO </h2>
             <div className="mb-4">
               <label htmlFor="name" className="block mb-2 font-medium text-black">Nama</label>
               <input
@@ -91,7 +205,8 @@ export default function RegisterPage() {
                 <span className='text-black'>Register with Google</span>
               </button>
             </div>
-          </form>
+            </div>
+            </main> */}
         </div>
       );
     };
