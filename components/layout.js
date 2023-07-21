@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 
-export default function Layout() {
+export default function Header() {
     return (
         <div>
             <header className="bg-white sticky top-0 h-14 flex font-bold text-xl text-purple-400">
