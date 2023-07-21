@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FcGoogle} from 'react-icons/fc'
+import {FcGoogle, FcDiscord} from 'react-icons/fc'
 import Link from "next/link";
 import { Head } from 'next/document';
 
@@ -36,12 +36,12 @@ export default function RegisterPage() {
       return (
         <div className="flex flex-col justify-center items-center py-2 h-screen bg-slate-200">
           
-          {/* <form onSubmit={handleSubmit} > */} 
+          <form onSubmit={handleSubmit} > 
             <div className="flex flex-col items-center justify-center w-full flex-1 px-35 py-15 text-center">
               <div className=" bg-gray-50  rounded-2xl flex w-2/3 max-w-4xl shadow-2xl">
 
               {/* Welcome */}
-                <div className="text-black w-3/5 bg-cyan-100 rounded-tl-2xl rounded-bl-2xl p-10">
+                <div className="text-black w-3/5 bg-gradient-to-b from-blue-800 rounded-tl-2xl rounded-bl-2xl p-10">
                   <h2 className="text-3xl font-bold mt-6 text-left">Welcome to JICO</h2>
                   <p className="text-xs mt-4 text-left">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec ultricies nisi. 
@@ -68,6 +68,7 @@ export default function RegisterPage() {
                           required
                         />
                       </div>
+
                    {/* Username */}
                       <div className="mb-4 mx-auto w-4/5">
                         <label htmlFor="username" className="block mb-2 font-medium text-black"></label>
@@ -81,6 +82,7 @@ export default function RegisterPage() {
                           required
                         />
                       </div>
+
                       {/* Email */}
                       <div className="mb-4 mx-auto w-4/5">
                         <label htmlFor="email" className="block mb-2 font-medium text-black"></label>
@@ -94,6 +96,7 @@ export default function RegisterPage() {
                           required
                         />
                       </div>
+                      
                     {/* Password */}
                     <div className="mb-4 mx-auto w-4/5">
                       <label htmlFor="password" className="block mb-2 font-medium text-black"></label>
@@ -143,70 +146,7 @@ export default function RegisterPage() {
                 </div>
               </div>
             </div>
-             {/* </form> */}
-
-            {/* <main className="flex flex-col items-center jus">
-            <div className="bg-white rounded-2xl shadow-2xl">
-            <h2 className="text-black font-bold text-3xl text-right mb-">Sign up</h2>
-            <h2 className="font-semibold text-xl text-black">Welcome to JICO </h2>
-            <div className="mb-4">
-              <label htmlFor="name" className="block mb-2 font-medium text-black">Nama</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="username" className="block mb-2 font-medium text-black">Username</label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block mb-2 font-medium text-black">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="block mb-2 font-medium text-black">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none"
-                required
-              />
-            </div>
-            <div className="text-center mb-4">
-              <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">Register</button>
-            </div>
-            <div className="flex justify-center">
-              <button type="button" onClick={handleGoogleRegistration} className="flex items-center border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                <span className='text-black'>Register with Google</span>
-              </button>
-            </div>
-            </div>
-            </main> */}
+             </form>
         </div>
       );
     };
