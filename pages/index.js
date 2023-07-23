@@ -3,6 +3,11 @@ import Layout from "../components/layout"
 import {FaDiscord} from 'react-icons/fa'
 
 export default function Home() {
+  <div>
+    <head>
+      <title>Home</title>
+    </head>
+  </div>
   return (
     <div>
       <Layout/>
