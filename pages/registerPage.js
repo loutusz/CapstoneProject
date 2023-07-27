@@ -36,12 +36,12 @@ export default function RegisterPage() {
       return (
         <div className="flex flex-col justify-center items-center py-2 h-screen bg-slate-200">
           
-          <form onSubmit={handleSubmit} > 
+          <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center w-full flex-1 px-35 py-15 text-center" > 
             <div className="flex flex-col items-center justify-center w-full flex-1 px-35 py-15 text-center">
               <div className=" bg-gray-50  rounded-2xl flex w-2/3 max-w-4xl shadow-2xl">
-
+       
               {/* Welcome */}
-                <div className="text-black w-3/5 bg-gradient-to-b from-blue-800 rounded-tl-2xl rounded-bl-2xl p-10">
+                <div className="text-black w-3/5 bg-gradient-to-t from-sky-200 to-stone-50 rounded-tl-2xl rounded-bl-2xl p-10">
                   <h2 className="text-3xl font-bold mt-6 text-left">Welcome to JICO</h2>
                   <p className="text-xs mt-4 text-left">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec ultricies nisi. 
