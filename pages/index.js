@@ -4,6 +4,7 @@ import {FaDiscord} from 'react-icons/fa'
 import { useRouter } from "next/router";
 import Content from "@/components/content";
 import Features from "@/components/feature";
+import Footer from "@/components/footer";
 
 export default function Home() {
   <div>
@@ -17,6 +18,7 @@ export default function Home() {
       {/* <FaDiscord/> */}
       <Content/>
       <Features/>
+      <Footer/>
     </div>
   )
 }
