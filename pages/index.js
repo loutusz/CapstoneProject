@@ -5,15 +5,15 @@ import { useRouter } from "next/router";
 import Content from "@/components/content";
 import Features from "@/components/feature";
 import Footer from "@/components/footer";
+import Head from 'next/head';
 
 export default function Home() {
-  <div>
-    <head>
-      <title>Home</title>
-    </head>
-  </div>
+
   return (
     <div>
+       <Head>
+         <title>Home</title>
+      </Head>
       <Header/>
       {/* <FaDiscord/> */}
       <Content/>

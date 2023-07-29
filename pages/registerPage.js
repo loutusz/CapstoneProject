@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FcGoogle, FcDiscord} from 'react-icons/fc'
 import Link from "next/link";
-import { Head } from 'next/document';
+import Head from 'next/head';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -34,7 +34,13 @@ export default function RegisterPage() {
       };
   
       return (
+        
         <div className="flex flex-col justify-center items-center py-2 h-screen bg-slate-200">
+          <div>
+            <Head>
+              <title>Register Page</title>
+            </Head>
+          </div>
           <form onSubmit={handleSubmit} className="flex flex-col items-center justify-center w-full flex-1 px-35 py-15 text-center" > 
             <div className="flex flex-col items-center justify-center w-full flex-1 px-35 py-15 text-center">
               <div className=" bg-gray-50  rounded-2xl flex w-2/3 max-w-4xl shadow-2xl">
