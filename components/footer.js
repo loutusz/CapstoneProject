@@ -1,13 +1,20 @@
 import React from "react";
-import {FaEnvelope, FaWhatsapp} from 'react-icons/fa'
+import {FaEnvelope, FaWhatsapp, FaLinkedin, FaTwitter} from 'react-icons/fa'
 export default function Footer (){
     return (
-        // py-8 px-6 flex justify-between items-center
-        <footer className="bg-blue-700 h-1/4 w-full flex md:flex-row flex-col justify-around items-start p-15">
-            <div className="text-white py-14 px-14 pl-24 ">
-                <h2 className="text-4xl font-bold">JICO </h2>
-                <p>© 2023</p>
-                <p>Privacy - Terms</p>
-            </div>
+        <footer className="bg-blue-700 flex justify-between items-center px-5 py-3">
+           <ul>
+                <div className="text-white">
+                    <h2 className="text-3xl font-bold">JICO </h2>
+                    <p>© 2023 | Privacy - Terms</p>
+                </div>
+         </ul>
+                  {/* Contact */}
+                <div className="flex gap-4 items-end px-5">
+                    <p>Contact US</p>
+                    <FaEnvelope className="text-2xl cursor-pointer hover:text-red-600"/>
+                    <FaWhatsapp className="text-2xl cursor-pointer hover:text-green-600"/>
+                    <FaLinkedin className="text-2xl cursor-pointer hover:text-sky-400"/>               
+                </div>   
         </footer>
     )}
