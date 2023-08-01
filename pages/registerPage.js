@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {FcGoogle, FcDiscord} from 'react-icons/fc'
 import Link from "next/link";
 import Head from 'next/head';
+import { FaRegEnvelope } from 'react-icons/fa';
+import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
 
 export default function RegisterPage() {
     const [formData, setFormData] = useState({
@@ -63,60 +65,64 @@ export default function RegisterPage() {
               {/* SignUp */}
               {/* p-9 w-4/5 */}
                 <div className="text-blackp-4 md:p-8 w-full md:w-3/5"> 
-                  <h2 className="text-3xl font-semibold mb-3">Sign Up</h2>
+                  <h2 className="text-3xl font-semibold mb-10">Sign Up</h2>
                   
                   {/* Name */}
-                     <div className="mt-6 mb-4 mx-auto w-4/5">
-                        <label htmlFor="name" className="block mb-2 font-medium text-black"></label>
+                     <div className="w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
+                     <MdPermIdentity className='m-[1%] text-slate-700'/>
                         <input
                           type="text"
                           name="name"
                           placeholder="Name"
                           value={formData.name}
                           onChange={handleChange}
-                          className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                          className="ml-[2%] w-full"
+                          // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
                       </div>
 
                    {/* Username */}
-                      <div className="mb-4 mx-auto w-4/5">
-                        <label htmlFor="username" className="block mb-2 font-medium text-black"></label>
+                      <div className="w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
+                      <MdPermIdentity className='m-[1%] text-slate-700'/>
                         <input
                           type="text"
                           name="username"
                           placeholder="Username"
                           value={formData.username}
                           onChange={handleChange}
-                          className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                          className="ml-[2%] w-full"
+                          // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
                       </div>
 
                       {/* Email */}
-                      <div className="mb-4 mx-auto w-4/5">
-                        <label htmlFor="email" className="block mb-2 font-medium text-black"></label>
+                      <div className="w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
+                      <FaRegEnvelope className='m-[1%] text-slate-700'/>
                         <input
                           type="email"
                           name="email"
                           placeholder="Email"
                           value={formData.email}
                           onChange={handleChange}
-                          className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                          className='ml-[2%] w-[90%]'
+                          // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
                       </div>
                       
                     {/* Password */}
-                    <div className="mb-10 mx-auto w-4/5">
-                      <label htmlFor="password" className="block mb-2 font-medium text-black"></label>
+                    <div className="w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black mb-10 ">
+                    <MdLockOutline className='m-[1%] text-slate-700'/>
                       <input
                         type="password"
                         name="password"
                         placeholder="Password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                        className='ml-[2%] w-[90%]'
+                        // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                         required
                       />
                      </div>
@@ -135,7 +141,7 @@ export default function RegisterPage() {
                     </div> */}
 
                      {/* Button Submit */}
-                  <div className="text-center mb-3">
+                  <div className="text-center mb-6">
                     <button type="submit" className="bg-blue-500 text-white w-4/5 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">Register</button>
                   </div>
 

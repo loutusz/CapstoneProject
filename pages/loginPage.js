@@ -3,7 +3,6 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { FaRegEnvelope } from 'react-icons/fa';
-import { FcGoogle } from 'react-icons/fc';
 import {MdLockOutline} from 'react-icons/md'
 
 export const loginPage = () => {
