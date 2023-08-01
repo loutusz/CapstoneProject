@@ -35,7 +35,7 @@ export default function RegisterPage() {
   
       return (
         
-        <div className="flex flex-col justify-center items-center py-2 h-screen bg-slate-200">
+        <div className="flex flex-col justify-center items-center py-2 w-full h-full bg-slate-200">
           <div>
             <Head>
               <title>Register Page</title>
@@ -46,7 +46,7 @@ export default function RegisterPage() {
               <div className=" bg-gray-50  rounded-2xl flex w-2/3 max-w-4xl shadow-2xl">
        
               {/* Welcome */}
-                <div className="text-black w-3/5 bg-gradient-to-t from-sky-200 to-stone-50 rounded-tl-2xl rounded-bl-2xl p-10">
+                <div className="text-black w-full md:w-2/5 bg-gradient-to-t from-sky-200 to-stone-50 rounded-tl-2xl rounded-bl-2xl p-10">
                   <h2 className="text-3xl font-bold mt-6 text-left">Welcome to JICO</h2>
                   <p className="text-xs mt-4 text-left">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec ultricies nisi. 
@@ -54,10 +54,15 @@ export default function RegisterPage() {
                   at mollis enim aliquet eget. Fusce eros neque, pharetra eget tincidunt in,
                   tincidunt nec tellus. 
                   </p>
+                  <div className='h-8 flex object-left-bottom'>
+                        <img className='' src='https://upload.wikimedia.org/wikipedia/id/thumb/c/c4/Telkom_Indonesia_2013.svg/1200px-Telkom_Indonesia_2013.svg.png'/>
+                        <img className='' src='https://cdn.icon-icons.com/icons2/2699/PNG/512/atlassian_jira_logo_icon_170512.png'/>
+                    </div>
                 </div>
 
               {/* SignUp */}
-                <div className="text-black p-9 w-4/5">
+              {/* p-9 w-4/5 */}
+                <div className="text-blackp-4 md:p-8 w-full md:w-3/5"> 
                   <h2 className="text-3xl font-semibold mb-3">Sign Up</h2>
                   
                   {/* Name */}
