@@ -1,5 +1,5 @@
 import React from "react";
-import {FaEnvelope, FaWhatsapp, FaLinkedin, FaTwitter} from 'react-icons/fa'
+import {FaEnvelope, FaWhatsapp, FaLinkedin} from 'react-icons/fa'
 export default function Footer (){
     return (
         <footer className="bg-blue-700 flex justify-between items-center px-5 py-3">
