@@ -48,7 +48,7 @@ export default function RegisterPage() {
               {/* Welcome */}
                 <div className="text-black w-full md:w-2/5 bg-gradient-to-t from-sky-200 to-stone-50 rounded-tl-2xl rounded-bl-2xl p-10">
                   <h2 className="text-3xl font-bold mt-6 text-left">Welcome to JICO</h2>
-                  <p className="text-xs mt-4 text-left">
+                  <p className="text-xs mt-4 mb-64 text-left">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec ultricies nisi. 
                   Suspendisse pulvinar viverra nibh vel ultricies. Mauris tincidunt mollis diam,
                   at mollis enim aliquet eget. Fusce eros neque, pharetra eget tincidunt in,
@@ -108,7 +108,7 @@ export default function RegisterPage() {
                       </div>
                       
                     {/* Password */}
-                    <div className="mb-4 mx-auto w-4/5">
+                    <div className="mb-10 mx-auto w-4/5">
                       <label htmlFor="password" className="block mb-2 font-medium text-black"></label>
                       <input
                         type="password"
@@ -122,7 +122,7 @@ export default function RegisterPage() {
                      </div>
 
                     {/* Checkbox */}
-                    <div className="flex w-64 mb-5 items-center mx-auto">
+                    {/* <div className="flex w-64 mb-5 items-center mx-auto">
                       <label htmlFor="remember" className="flex items-center mt-2 text-justify text-xs">
                         <input
                           type="checkbox"
@@ -132,24 +132,17 @@ export default function RegisterPage() {
                         />
                         I’ve read and agree with terms of service and our privacy policy
                       </label>                   
-                    </div>
+                    </div> */}
 
                      {/* Button Submit */}
                   <div className="text-center mb-3">
                     <button type="submit" className="bg-blue-500 text-white w-4/5 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">Register</button>
                   </div>
 
-                  <p className="text-sm">or Connect With</p>
-
-                  {/* Button Google Regist */}
-                  <div className="flex flex-col items-center">
-                    <button onClick={handleGoogleRegistration} className="bg-gray-100 w-56 rounded-sm px-4 py-2 flex items-center mt-2 hover:bg-gray-400 transition-colors duration-200" ><FcGoogle size="25px" className="mr-3 "/> Sign Up With Google</button>
-                  </div>   
-
                   {/* Sign in */}
                   <div className="flex flex-col items-center mt-3">
                     <p>Already a member?
-                      <a href='/loginPage' className="text-blue-700 font-semibold"> Sign In</a>
+                      <a href='/loginPage' className="text-blue-700 font-bold text-base leading-snug"> Sign In</a>
                     </p>                  
                   </div>
                   
