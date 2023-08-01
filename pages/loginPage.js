@@ -76,7 +76,7 @@ export const loginPage = () => {
                                 <button onClick={handleGoogleRegistration} className="w-[100%] bg-zinc-100 rounded-md border  hover:bg-gray-400 transition-colors duration-200 justify-center items-center flex py-[3%] mb-[2%] shadow-[0_3px_10px_rgb(0,0,0,0.1)]" ><FcGoogle size="25px" className="mr-[5%] "/> Sign In With Google</button>
                             </div>
                             <div className='ForgotPassword mt-[5%] '>
-                                <a href='#' className='text-slate-700 text-base font-normal leading-snug'>Forgot Password?</a>
+                                <a href='/forgotpass' className='text-slate-700 text-base font-normal leading-snug'>Forgot Password?</a>
                             </div>
                             <div className='mt-[1%] mb-[15%]'>
                                 <p className='SignUp text-slate-700 text-base font-normal leading-snug'>Not a member yet? <a href='#' className='text-blue-700 font-bold text-base leading-snug'>Sign Up</a></p>
@@ -98,12 +98,8 @@ export const loginPage = () => {
                     </div>
                     
                 </div>
-
-
-
             </div>
-        </main>
-        
+        </main> 
     </div>
   )
 }

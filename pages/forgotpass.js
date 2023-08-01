@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Header from "@/components/header";
+import { useRouter } from "next/router";
 
 export default function Forgotpass() {
     const [formData, setFormData] = useState({
@@ -23,10 +24,14 @@ export default function Forgotpass() {
           confirmPassword: ''
         });
       };
+
+      const router = useRouter();
+
+      const handleButtonClick = () => {
+        router.push('/loginPage');
+      };
     
       return (
-        <div>
-            <Header/>
         <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-zinc-100">
           <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
             <form onSubmit={handleSubmit} className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
@@ -68,13 +73,13 @@ export default function Forgotpass() {
                 <button
                   type="submit"
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none"
+                  onClick={handleButtonClick}
                 >
                   Reset Password
                 </button>
               </div>
             </form>
           </main>
-        </div>
         </div>
 
       );
