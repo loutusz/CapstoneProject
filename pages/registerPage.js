@@ -37,7 +37,7 @@ export default function RegisterPage() {
   
       return (
         
-        <div className="flex flex-col justify-center items-center py-2 w-full h-full bg-slate-200">
+        <div className="flex flex-col justify-center items-center py-2 min-h-screen w-full h-full bg-slate-200">
           <div>
             <Head>
               <title>Register Page</title>
