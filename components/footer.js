@@ -10,7 +10,7 @@ export default function Footer (){
                 </div>
          </ul>
                   {/* Contact */}
-                <div className="flex gap-4 items-end px-5">
+                <div className="flex gap-4 items-end px-5 text-white">
                     <p>Contact US</p>
                     <FaEnvelope className="text-2xl cursor-pointer hover:text-red-600"/>
                     <FaWhatsapp className="text-2xl cursor-pointer hover:text-green-600"/>

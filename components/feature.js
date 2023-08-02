@@ -7,7 +7,7 @@ export default function Features() {
             </h1>
         <div className="flex flex-wrap -m-4">
           <div className="p-4 lg:w-1/3">
-            <div className="h-full bg-gray-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative transition-transform transform hover:scale-110">
+            <div className="h-full bg-blue-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative transition-transform transform hover:scale-110 hover:bg-blue-200">
               <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">FEATURE 1</h2>
               <h1 className="title-font sm:text-2xl text-xl font-medium text-gray-900 mb-3">blablabla</h1>
               <p className="leading-relaxed mb-3">
@@ -22,7 +22,7 @@ export default function Features() {
             </div>
           </div>
           <div className="p-4 lg:w-1/3">
-            <div className="h-full bg-gray-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative transition-transform transform hover:scale-110">
+            <div className="h-full bg-blue-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative transition-transform transform hover:scale-110 hover:bg-blue-200">
               <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">FEATURE 2</h2>
               <h1 className="title-font sm:text-2xl text-xl font-medium text-gray-900 mb-3">blablabla</h1>
               <p className="leading-relaxed mb-3">
@@ -37,7 +37,7 @@ export default function Features() {
             </div>
           </div>
           <div className="p-4 lg:w-1/3">
-            <div className="h-full bg-gray-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative transition-transform transform hover:scale-110">
+            <div className="h-full bg-blue-100 bg-opacity-75 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative transition-transform transform hover:scale-110 hover:bg-blue-200">
               <h2 className="tracking-widest text-xs title-font font-medium text-gray-400 mb-1">FEATURE 3</h2>
               <h1 className="title-font sm:text-2xl text-xl font-medium text-gray-900 mb-3">blablabla</h1>
               <p className="leading-relaxed mb-3">

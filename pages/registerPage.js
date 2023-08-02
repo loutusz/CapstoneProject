@@ -5,8 +5,7 @@ import Head from 'next/head';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
 
-// export default function RegisterPage() {
-  const useForm = () => {
+export default function RegisterPage() {
     const [formData, setFormData] = useState({
         name: '',
         username: '',
@@ -20,7 +19,31 @@ import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
     
       const handleSubmit = (e) => {
         e.preventDefault();
-        // Lakukan aksi pendaftaran atau validasi form di sini 
+        // Lakukan aksi pendaftaran atau validasi form di sini
+        const fullname = /^[A-Z][a-zA-Z\s]+$/;
+        if(!fullname.test(formData.fullname)) {
+          alert('Nama harus diawali dengan huruf kapital');
+          return;
+        }
+
+        const username = /^[A-Za-z]{5,15}$/;
+        if(!username.test(formData.username)) {
+          alert('Username harus terdiri dari 5-15 karakter');
+          return;
+        }
+      
+        const password = /^(?=.*[A-Z])(?=.*[0-9]).{6,10}$/
+        if(!password.test(formData.password)) {
+          alert('Password harus terdiri dari 6-10 karakter dengan minimal satu huruf kapital dan satu angka');
+          return;
+        }
+
+        const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!email.test(formData.email)) {
+          alert('Email harus memiliki format yang benar (contoh: example@example.com');
+          return;
+        }
+        console.log('Pendaftaran berhasil');
         console.log(formData);
         // Reset form setelah pengiriman
         setFormData({
@@ -166,6 +189,3 @@ import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
         </div>
       );
     };
-  // };
-
-  export default RegisterPage;
