@@ -71,22 +71,15 @@ export const loginPage = () => {
                                     Remember me
                                 </label>                   
                             </div>
-                            <div className='flex flex-col justify-center  items-center w-[60%]'>
-                                <p className='bg-zinc-100 text-slate-700 text-base font-normal leading-snug py-[2%] mt-[2%]'>or Connect With</p>
-                                <button onClick={handleGoogleRegistration} className="w-[100%] bg-zinc-100 rounded-md border  hover:bg-gray-400 transition-colors duration-200 justify-center items-center flex py-[3%] mb-[2%] shadow-[0_3px_10px_rgb(0,0,0,0.1)]" ><FcGoogle size="25px" className="mr-[5%] "/> Sign In With Google</button>
-                            </div>
                             <div className='ForgotPassword mt-[5%] '>
                                 <a href='/forgotpass' className='text-slate-700 text-base font-normal leading-snug'>Forgot Password?</a>
                             </div>
                             <div className='mt-[1%] mb-[15%]'>
-                                <p className='SignUp text-slate-700 text-base font-normal leading-snug'>Not a member yet? <a href='#' className='text-blue-700 font-bold text-base leading-snug'>Sign Up</a></p>
+                                <p className='SignUp text-slate-700 text-base font-normal leading-snug'>Not a member yet? <a href='/registerPage' className='text-blue-700 font-bold text-base leading-snug'>Sign Up</a></p>
                             </div>
                         </div>
                     </div>
                 </form>
-
-
-
 
                 <div className='Background bg-gradient-to-t from-sky-200 to-stone-50 rounded-r-2xl m-0 ml-0 w-2/5 pt-28 pb-20 px-10'>
                     <h2 className='text-2xl font-semibold mb-2 text-right text-slate-700 leading-snug pt-[30%]'>Welcome to JICO</h2>

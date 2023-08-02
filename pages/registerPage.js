@@ -27,11 +27,7 @@ export default function RegisterPage() {
           password: ''
         });
       };
-    
-      const handleGoogleRegistration = () => {
-        // Lakukan proses pendaftaran dengan Google di sini
-        console.log('Melakukan pendaftaran dengan Google');
-      };
+
   
       return (
         
@@ -138,13 +134,6 @@ export default function RegisterPage() {
                   <div className="text-center mb-3">
                     <button type="submit" className="bg-blue-500 text-white w-4/5 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">Register</button>
                   </div>
-
-                  <p className="text-sm">or Connect With</p>
-
-                  {/* Button Google Regist */}
-                  <div className="flex flex-col items-center">
-                    <button onClick={handleGoogleRegistration} className="bg-gray-100 w-56 rounded-sm px-4 py-2 flex items-center mt-2 hover:bg-gray-400 transition-colors duration-200" ><FcGoogle size="25px" className="mr-3 "/> Sign Up With Google</button>
-                  </div>   
 
                   {/* Sign in */}
                   <div className="flex flex-col items-center mt-3">
