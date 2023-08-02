@@ -5,7 +5,8 @@ import Head from 'next/head';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
 
-export default function RegisterPage() {
+// export default function RegisterPage() {
+  const useForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         username: '',
@@ -19,7 +20,7 @@ export default function RegisterPage() {
     
       const handleSubmit = (e) => {
         e.preventDefault();
-        // Lakukan aksi pendaftaran atau validasi form di sini
+        // Lakukan aksi pendaftaran atau validasi form di sini 
         console.log(formData);
         // Reset form setelah pengiriman
         setFormData({
@@ -29,14 +30,18 @@ export default function RegisterPage() {
           password: ''
         });
       };
-    
-      const handleGoogleRegistration = () => {
-        // Lakukan proses pendaftaran dengan Google di sini
-        console.log('Melakukan pendaftaran dengan Google');
+
+      return{
+        formData, 
+        handleChange, 
+        handleSubmit,
       };
-  
-      return (
-        
+    };
+
+    const RegisterPage = () => {
+      const{formData, handleChange, handleSubmit} = useForm();
+
+      return (        
         <div className="flex flex-col justify-center items-center py-2 min-h-screen w-full h-full bg-slate-200">
           <div>
             <Head>
@@ -73,10 +78,11 @@ export default function RegisterPage() {
                         <input
                           type="text"
                           name="name"
-                          placeholder="Name"
+                          placeholder="Full Name"
                           value={formData.name}
                           onChange={handleChange}
                           className="ml-[2%] w-full"
+                          maxLength={15}
                           // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
@@ -92,6 +98,7 @@ export default function RegisterPage() {
                           value={formData.username}
                           onChange={handleChange}
                           className="ml-[2%] w-full"
+                          maxLength={15}
                           // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
@@ -113,7 +120,7 @@ export default function RegisterPage() {
                       </div>
                       
                     {/* Password */}
-                    <div className="w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black mb-10 ">
+                    <div className="w-[80%] mx-auto bg-white flex items-center border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black mb-10 ">
                     <MdLockOutline className='m-[1%] text-slate-700'/>
                       <input
                         type="password"
@@ -159,3 +166,6 @@ export default function RegisterPage() {
         </div>
       );
     };
+  // };
+
+  export default RegisterPage;
