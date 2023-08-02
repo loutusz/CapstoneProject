@@ -17,8 +17,8 @@ export default function Header() {
         <Link className="text-white hover:text-gray-300 font-semibold" href="/registerPage">
           Register
         </Link>
-        <Link className="text-white hover:text-gray-300 font-semibold" href="/loginPage">
-          Login
+        <Link className="text-white hover:text-gray-300 font-semibold" href="/SignInPage">
+          Sign In
         </Link>
       </div>
     </header>
