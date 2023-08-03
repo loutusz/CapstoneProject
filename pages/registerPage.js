@@ -5,7 +5,8 @@ import Head from 'next/head';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
 
-export default function RegisterPage() {
+// export default function RegisterPage() {
+  const useForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         username: '',
@@ -20,11 +21,11 @@ export default function RegisterPage() {
       const handleSubmit = (e) => {
         e.preventDefault();
         // Lakukan aksi pendaftaran atau validasi form di sini
-        const fullname = /^[A-Z][a-zA-Z\s]+$/;
-        if(!fullname.test(formData.fullname)) {
-          alert('Nama harus diawali dengan huruf kapital');
-          return;
-        }
+        // const fullname = /^[A-Z][a-zA-Z\s]+$/;
+        // if(!fullname.test(formData.fullname)) {
+        //   alert('Nama harus diawali dengan huruf kapital');
+        //   return;
+        // }
 
         const username = /^[A-Za-z]{5,15}$/;
         if(!username.test(formData.username)) {
@@ -105,7 +106,6 @@ export default function RegisterPage() {
                           value={formData.name}
                           onChange={handleChange}
                           className="ml-[2%] w-full"
-                          maxLength={15}
                           // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
@@ -188,4 +188,7 @@ export default function RegisterPage() {
              </form>
         </div>
       );
-    };
+    // };
+ };
+
+ export default RegisterPage;
