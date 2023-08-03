@@ -4,6 +4,7 @@ import Link from "next/link";
 import Head from 'next/head';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
+import { BiSolidHide } from "react-icons/bi";
 
 // export default function RegisterPage() {
   const useForm = () => {
@@ -64,6 +65,7 @@ import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
 
     const RegisterPage = () => {
       const{formData, handleChange, handleSubmit} = useForm();
+      const{show,showPass} = useState(false);
 
       return (        
         <div className="flex flex-col justify-center items-center py-2 min-h-screen w-full h-full bg-slate-200">
@@ -143,7 +145,8 @@ import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
                       </div>
                       
                     {/* Password */}
-                    <div className="w-[80%] mx-auto bg-white flex items-center border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black mb-10 ">
+                    <div className='relative py-2'>
+                    <div className="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.1)] rounded-md flex items-center pl-4 ">
                     <MdLockOutline className='m-[1%] text-slate-700'/>
                       <input
                         type="password"
@@ -153,8 +156,10 @@ import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
                         onChange={handleChange}
                         className='ml-[2%] w-[90%]'
                         // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
-                        required
+                        required                    
                       />
+                      <BiSolidHide/>
+                     </div>
                      </div>
 
                     {/* Checkbox */}
@@ -178,7 +183,7 @@ import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
                   {/* Sign in */}
                   <div className="flex flex-col items-center mt-3">
                     <p>Already a member?
-                      <a href='/loginPage' className="text-blue-700 font-bold text-base leading-snug"> Sign In</a>
+                      <a href='/signInPage' className="text-blue-700 font-bold text-base leading-snug"> Sign In</a>
                     </p>                  
                   </div>
                   

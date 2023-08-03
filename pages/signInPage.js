@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import {MdLockOutline} from 'react-icons/md'
+import { BiSolidHide } from "react-icons/bi";
 
 export const notLoginPage = () => {
   const [formData, setFormData] = useState({
@@ -30,6 +31,8 @@ export const notLoginPage = () => {
           password: ''
         });
       };
+
+      const{show,showPass} = useState(false);
   
     return (
     <div>
@@ -48,20 +51,32 @@ export const notLoginPage = () => {
                     <div className='flex flex-col items-center'>
                         <h1 className=' text-slate-700 text-4xl font-semibold pt-14'>Sign in</h1>
                     </div>
+
                     {/* ISI FORM */}
                     <form onSubmit={handleSubmit} className='flex flex-col items-center space-y-4'>
                         <div className='relative py-2'>
-                            <div className=' bg-white shadow-[0_3px_10px_rgb(0,0,0,0.1)] rounded-md flex items-center pl-4'>
+
+                            {/* Username */}
+                         <div className=' bg-white shadow-[0_3px_10px_rgb(0,0,0,0.1)] rounded-md flex items-center pl-4'>
                                 <FaRegEnvelope className=' text-slate-700'/>
                                 <input className='pl-4  py-1 w-72 h-10' type='username' name='username' value={formData.username} onChange={handleChange} placeholder='Username'/>
                             </div>
                         </div>
+
+                        {/* Password */}
                         <div className='relative py-2'>
                             <div className=' bg-white shadow-[0_3px_10px_rgb(0,0,0,0.1)] rounded-md flex items-center pl-4'>
                                 <MdLockOutline className=' text-slate-700'/>
-                                <input className='pl-4  py-1 w-72 h-10' type='password' name='password' value={formData.password} onChange={handleChange} placeholder='Password'/>
+                                <input className='pl-4 py-1 w-72 h-10' 
+                                type='password' 
+                                name='password' 
+                                value={formData.password} 
+                                onChange={handleChange} placeholder='Password'/>
+                                <BiSolidHide className=""/>
                             </div>
                         </div>
+
+                        {/* Submit */}
                         <div className='relative py-2'>
                             <button type="submit" className="bg-blue-700  text-zinc-100 text-center justify-center rounded-md hover:bg-blue-800 transition-colors duration-200 inline-flex items-center w-72 h-10 px-3 py-1">Sign In</button>
                         </div>
@@ -88,7 +103,7 @@ export const notLoginPage = () => {
                     <div>
 
                         <h2 className='text-2xl font-bold mb-2'>Welcome to JICO</h2>
-                        <p className='text-base font-normal'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec ultricies nisi. Suspendisse pulvinar viverra nibh vel ultricies. Mauris tincidunt mollis diam, at mollis enim aliquet eget. Fusce eros neque, pharetra eget tincidunt in, tincidunt nec tellus. </p>
+                        <p className='text-base font-normal mb-48'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nec ultricies nisi. Suspendisse pulvinar viverra nibh vel ultricies. Mauris tincidunt mollis diam, at mollis enim aliquet eget. Fusce eros neque, pharetra eget tincidunt in, tincidunt nec tellus. </p>
 
                         <div className='h-8 flex object-right-bottom'>
                         <img className='' src='https://upload.wikimedia.org/wikipedia/id/thumb/c/c4/Telkom_Indonesia_2013.svg/1200px-Telkom_Indonesia_2013.svg.png'/>
