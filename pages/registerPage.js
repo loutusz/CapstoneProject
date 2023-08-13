@@ -146,7 +146,7 @@ import { BiSolidHide } from "react-icons/bi";
                       
                     {/* Password */}
                     <div className='relative py-2'>
-                    <div className="bg-white shadow-[0_3px_10px_rgb(0,0,0,0.1)] rounded-md flex items-center pl-4 ">
+                    <div className="w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
                     <MdLockOutline className='m-[1%] text-slate-700'/>
                       <input
                         type="password"
