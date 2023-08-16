@@ -39,6 +39,9 @@ const HeaderHome = () => {
                 />
               </div>
               <ul className="space-y-2">
+              <li>
+                  <a href="/homePage" className="text-white hover:underline">Home</a>
+                </li>
                 <li>
                   <a href="/projects" className="text-white hover:underline">Projects</a>
                 </li>
