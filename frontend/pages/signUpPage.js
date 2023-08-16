@@ -73,12 +73,12 @@ import { BiSolidHide } from "react-icons/bi";
                 <title>Sign Up</title>
                 </Head>
             </div>
-
+            {/* block h-screen items-center justify-center p-4 md:flex */}
             {/* Backkground */}
-            <div className='bg-gradient-to-r from-cyan-500/10 via-teal-300/10 to-sky-200/10 block h-screen items-center justify-center p-4 md:flex'>
-
+            <div className='bg-gradient-to-r from-cyan-500/10 via-teal-300/10 to-sky-200/10 flex justify-center items-center h-screen p-4'>
+            {/* space-y-8 w-full md:flex-row */}
                {/* Container */}
-                <div className=' bg-white flex flex-col items-center max-w-screen-lg overflow-hidden rounded-lg space-y-8 shadow-[0_3px_10px_rgb(0,0,0,1)] w-full md:flex-row text-slate-700 '>
+                <div className=' bg-white flex flex-col items-center max-w-screen-lg overflow-hidden rounded-lg shadow-[0_3px_10px_rgb(0,0,0,1)] space-y-8 w-full md:flex-row text-slate-700 '>
                     
                     {/* Welcome*/}
                     <div className='bg-gradient-to-t from-sky-200 to-stone-50 flex flex-col items-center p-4 w-full md:w-2/5 text-white'>
@@ -99,14 +99,14 @@ import { BiSolidHide } from "react-icons/bi";
                     </div>
 
                     {/* Sign Up */}
-                        {/* <div className='flex flex-col items-center space-y-4 '>
+                        {/* <div className='text-center '>
                          <h1 className='text-slate-700 text-4xl font-semibold '>Sign Up</h1>       
                         </div> */}
 
                         {/* Form */}
-                        <form onSubmit={handleSubmit} className='flex flex-col justify-center items-center p-28 space-y-4'>
+                        <form onSubmit={handleSubmit} className='flex flex-col justify-center items-center p-14 pl-36 space-y-4'>
                             {/* Title */}
-                            <div className='flex flex-col  items-center space-y-4 '>
+                            <div className='flex flex-col  items-center space-y-4 mb-4  '>
                               <h1 className='text-slate-700 text-4xl font-semibold '>Sign Up</h1>       
                             </div>
 
@@ -122,7 +122,7 @@ import { BiSolidHide } from "react-icons/bi";
                                     placeholder="Full Name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    className="ml-[2%] w-full"
+                                    className="pl-2 py-1 w-72"
                                     // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                                     required
                                     />
@@ -137,13 +137,13 @@ import { BiSolidHide } from "react-icons/bi";
                                           placeholder="Username"
                                           value={formData.username}
                                           onChange={handleChange}
-                                          className="ml-[2%] w-full"
+                                          className="pl-2 py-1 w-72"
                                           required
                                       />
                                   </div>
 
                                   {/* Email */}
-                                  <div className="w-full bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
+                                  <div className=" bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
                                       <FaRegEnvelope className='m-[1%] text-slate-700'/>
                                       <input
                                           type="email"
@@ -151,7 +151,7 @@ import { BiSolidHide } from "react-icons/bi";
                                           placeholder="Email"
                                           value={formData.email}
                                           onChange={handleChange}
-                                          className="ml-[2%] w-full"
+                                          className="pl-2 py-1 w-72 "
                                           required
                                       />
                                   </div>
@@ -160,17 +160,28 @@ import { BiSolidHide } from "react-icons/bi";
                                   <div className="w-full bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
                                       <MdLockOutline className='m-[1%] text-slate-700'/>
                                       <input
-                                          type="passwprd"
+                                          type="password"
                                           name="password"
                                           placeholder="Password"
                                           value={formData.password}
                                           onChange={handleChange}
-                                          className="ml-[2%] w-full"
+                                          className="pl-2 py-1 w-72"
                                           required
                                       />
                                        <BiSolidHide/>
                                   </div>
                                   
+                                  {/* Button Submit */}
+                                  <div className="text-center mb-6">
+                                    <button type="submit" className="bg-blue-500 text-white w-80 px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200">Register</button>
+                                  </div>
+
+                                  {/* Sign in */}
+                                  <div className="flex flex-col items-center mt-3">
+                                    <p>Already a member?
+                                      <a href='/signInPage' className="text-blue-700 font-bold text-base leading-snug"> Sign In</a>
+                                    </p>                  
+                                  </div>
                                   
                             </div>
                         </form>

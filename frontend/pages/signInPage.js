@@ -57,15 +57,15 @@ export const notLoginPage = () => {
                         <div className='relative py-2'>
 
                             {/* Username */}
-                         <div className=' bg-white shadow-[0_3px_10px_rgb(0,0,0,0.1)] rounded-md flex items-center pl-4'>
+                         <div className=' bg-white border-gray-300 border rounded-lg focus:outline-none shadow shadow-black flex items-center pl-4'>
                                 <FaRegEnvelope className=' text-slate-700'/>
-                                <input className='pl-4  py-1 w-72 h-10' type='username' name='username' value={formData.username} onChange={handleChange} placeholder='Username'/>
+                                <input className='pl-4 py-1 w-72 h-10' type='username' name='username' value={formData.username} onChange={handleChange} placeholder='Username'/>
                             </div>
                         </div>
 
                         {/* Password */}
                         <div className='relative py-2'>
-                            <div className=' bg-white shadow-[0_3px_10px_rgb(0,0,0,0.1)] rounded-md flex items-center pl-4'>
+                            <div className=' bg-white border-gray-300 border rounded-lg focus:outline-none shadow shadow-black flex items-center pl-4'>
                                 <MdLockOutline className=' text-slate-700'/>
                                 <input className='pl-4 py-1 w-72 h-10' 
                                 type='password' 
