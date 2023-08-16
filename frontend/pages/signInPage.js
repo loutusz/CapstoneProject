@@ -2,7 +2,7 @@ import React from 'react'
 import Head from 'next/head';
 import { useState } from 'react';
 import { FaRegEnvelope } from 'react-icons/fa';
-import {MdLockOutline} from 'react-icons/md'
+import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
 import { BiSolidHide } from "react-icons/bi";
 
 export const notLoginPage = () => {
@@ -52,18 +52,32 @@ export const notLoginPage = () => {
 
                     {/* ISI FORM */}
                     <form onSubmit={handleSubmit} className='flex flex-col items-center space-y-4'>
-                        <div className='relative py-2'>
+                        {/* <div className='relative py-2'> */}
 
                             {/* Username */}
-                         <div className=' bg-white border-gray-300 border rounded-lg focus:outline-none shadow shadow-black flex items-center pl-4'>
+                         {/* <div className=' bg-white border-gray-300 border rounded-lg focus:outline-none shadow shadow-black flex items-center pl-4'>
                                 <FaRegEnvelope className=' text-slate-700'/>
                                 <input className='pl-4 py-1 w-72 h-10' type='username' name='username' value={formData.username} onChange={handleChange} placeholder='Username'/>
                             </div>
-                        </div>
+                        </div> */}
+                        <div className="w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
+                      <MdPermIdentity className='m-[1%] text-slate-700'/>
+                        <input
+                          type="text"
+                          name="username"
+                          placeholder="Username"
+                          value={formData.username}
+                          onChange={handleChange}
+                          className="ml-[2%] w-full"
+                          maxLength={15}
+                          // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                          required
+                        />
+                      </div>
 
                         {/* Password */}
                         <div className='relative py-2'>
-                            <div className=' bg-white border-gray-300 border rounded-lg focus:outline-none shadow shadow-black flex items-center pl-4'>
+                            <div className=' w-[80%] mx-auto bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black'>
                                 <MdLockOutline className=' text-slate-700'/>
                                 <input className='pl-4 py-1 w-72 h-10' 
                                 type='password' 
