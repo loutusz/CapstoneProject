@@ -40,13 +40,13 @@ const HeaderHome = () => {
               </div>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-white hover:underline">Menu 1</a>
+                  <a href="#" className="text-white hover:underline">Projects</a>
                 </li>
                 <li>
-                  <a href="#" className="text-white hover:underline">Menu 2</a>
+                  <a href="/providers" className="text-white hover:underline">Providers</a>
                 </li>
                 <li>
-                  <a href="#" className="text-white hover:underline">Menu 3</a>
+                  <a href="#" className="text-white hover:underline">Settings</a>
                 </li>
               </ul>
             </nav>
