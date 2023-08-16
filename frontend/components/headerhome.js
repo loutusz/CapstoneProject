@@ -10,7 +10,7 @@ const HeaderHome = () => {
   };
 
   return (
-    <header className="py-4 px-6 flex justify-between items-center bg-blue-500">
+    <header className="py-4 px-6 flex justify-between items-center bg-blue-700">
       <button
         className="text-white text-xl focus:outline-none"
         onClick={toggleSidebar}
@@ -29,7 +29,7 @@ const HeaderHome = () => {
       </div>
       {isSidebarOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-10">
-          <div className="absolute left-0 h-full w-64 bg-blue-700 shadow-md">
+          <div className="absolute left-0 h-full w-64 bg-blue-800 shadow-md">
             <nav className="p-4">
               <div className="flex items-enter justify-between mb-4 text-white">
                 <h2 className="text-xl font-semibold">Menu</h2>

@@ -1,9 +1,7 @@
 import React from 'react'
 import Head from 'next/head';
 import { useState } from 'react';
-import Link from 'next/link';
 import { FaRegEnvelope } from 'react-icons/fa';
-import { FcGoogle } from 'react-icons/fc';
 import {MdLockOutline} from 'react-icons/md'
 import { BiSolidHide } from "react-icons/bi";
 

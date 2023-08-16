@@ -1,5 +1,4 @@
 import React from "react";
-import { FaDiscord } from "react-icons/fa";
 
 export default function content() {
   return (
