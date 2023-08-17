@@ -1,12 +1,21 @@
-import React, {useState} from 'react';
-import Link from "next/link";
+import React, {useState, useRef, useEffect} from 'react';
+// import Link from "next/link";
 import Head from 'next/head';
 import { FaRegEnvelope } from 'react-icons/fa';
 import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
 import { BiSolidHide } from "react-icons/bi";
 
-// export default function RegisterPage() {
-  const useForm = () => {
+// export default function SignUpPage() {
+
+const fullname_valid =  /^[A-Z][a-zA-Z\s]*$/;
+const username_valid = /^[a-zA-Z][a-zA-Z0-9_]{5,15}$/;
+const email_valid = /^[a-zA-Z0-9_]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const pass_valid = /^(?=.*[a-z])(?=.*\d)[a-zA-Z0-9\s]{6,10}$/;      //ada satu huruf dan angka yang required dengan min.6-10 huruf 
+
+const SignUpPage = () => {
+    const userReference = useRef();
+    const errReference = useRef();  
+  // const useForm = () => {
     const [formData, setFormData] = useState({
         name: '',
         username: '',
@@ -27,23 +36,23 @@ import { BiSolidHide } from "react-icons/bi";
         //   return;
         // }
 
-        const username = /^[A-Za-z]{5,15}$/;
-        if(!username.test(formData.username)) {
-          alert('Username harus terdiri dari 5-15 karakter');
-          return;
-        }
+        // const username = /^[A-Za-z]{5,15}$/;
+        // if(!username.test(formData.username)) {
+        //   alert('Username harus terdiri dari 5-15 karakter');
+        //   return;
+        // }
       
-        const password = /^(?=.*[A-Z])(?=.*[0-9]).{6,10}$/
-        if(!password.test(formData.password)) {
-          alert('Password harus terdiri dari 6-10 karakter dengan minimal satu huruf kapital dan satu angka');
-          return;
-        }
+        // const password = /^(?=.*[A-Z])(?=.*[0-9]).{6,10}$/
+        // if(!password.test(formData.password)) {
+        //   alert('Password harus terdiri dari 6-10 karakter dengan minimal satu huruf kapital dan satu angka');
+        //   return;
+        // }
 
-        const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!email.test(formData.email)) {
-          alert('Email harus memiliki format yang benar (contoh: example@example.com');
-          return;
-        }
+        // const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // if(!email.test(formData.email)) {
+        //   alert('Email harus memiliki format yang benar (contoh: example@example.com');
+        //   return;
+        // }
         console.log('Pendaftaran berhasil');
         console.log(formData);
         // Reset form setelah pengiriman
@@ -55,16 +64,16 @@ import { BiSolidHide } from "react-icons/bi";
         });
       };
 
-      return{
-        formData, 
-        handleChange, 
-        handleSubmit,
-      };
-    };
+    //   return{
+    //     formData, 
+    //     handleChange, 
+    //     handleSubmit,
+    //   };
+    // };
 
-    const SignUpPage = () => {
-      const{formData, handleChange, handleSubmit} = useForm();
-      const{show,showPass} = useState(false);
+    // const SignUpPage = () => {
+    //   const{formData, handleChange, handleSubmit} = useForm();
+    //   const{show,showPass} = useState(false);
 
       return(
         <div>
@@ -99,9 +108,6 @@ import { BiSolidHide } from "react-icons/bi";
                     </div>
 
                     {/* Sign Up */}
-                        {/* <div className='text-center '>
-                         <h1 className='text-slate-700 text-4xl font-semibold '>Sign Up</h1>       
-                        </div> */}
 
                         {/* Form */}
                         <form onSubmit={handleSubmit} className='flex flex-col justify-center items-center p-14 pl-36 space-y-4'>
@@ -191,7 +197,7 @@ import { BiSolidHide } from "react-icons/bi";
 
   
       )
+    };
 
-};
 
 export default SignUpPage;
