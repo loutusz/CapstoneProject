@@ -51,6 +51,9 @@ const HeaderHome = () => {
                 <li>
                   <a href="#" className="text-white hover:underline">Settings</a>
                 </li>
+                <li>
+                  <a href='/' className='text-white hover:underline'>Logout</a>
+                </li>
               </ul>
             </nav>
           </div>
