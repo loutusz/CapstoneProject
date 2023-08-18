@@ -93,7 +93,7 @@ export const notLoginPage = () => {
                     <div className='flex flex-col items-center pb-10'>
                         <a href='/NotForgotPass' className='text-slate-700 text-s font-semibold leading-snug hover:underline'>Forgot Password?</a>
 
-                        <p className='SignUp text-slate-700 text-base font-normal leading-snug'>Not a member yet? <a href='/registerPage' className='text-blue-700 font-bold text-base leading-snug'>Sign Up</a></p>
+                        <p className='SignUp text-slate-700 text-base font-normal leading-snug'>Not a member yet? <a href='/signUpPage' className='text-blue-700 font-bold text-base leading-snug'>Sign Up</a></p>
                     </div>
                     <div className=''>
                         

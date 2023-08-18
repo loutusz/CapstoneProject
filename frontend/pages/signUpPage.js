@@ -1,9 +1,10 @@
 import React, {useState, useRef, useEffect} from 'react';
 // import Link from "next/link";
 import Head from 'next/head';
-import { FaRegEnvelope } from 'react-icons/fa';
+import { FaRegEnvelope, FaTimes } from 'react-icons/fa';
 import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
-import { BiSolidHide } from "react-icons/bi";
+import { BiSolidHide, BiSolidInfoCircle } from "react-icons/bi";
+import { FcCheckmark} from "react-icons/fc";
 
 // export default function SignUpPage() {
 
@@ -15,20 +16,92 @@ const pass_valid = /^(?=.*[a-z])(?=.*\d)[a-zA-Z0-9\s]{6,10}$/;      //ada satu h
 const SignUpPage = () => {
     const userReference = useRef();
     const errReference = useRef();  
-  // const useForm = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        username: '',
-        email: '',
-        password: ''
-      });
-    
-      const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-      };
+    // const fullnameReference = useRef();
+    // const emailReference = useRef();  
+
+    const [fullname, setFullname] = useState('');
+    const [validFullname, setValidFullname] = useState(false);
+    const [fullnameFocus, setFullnameFocus] = useState(false);
+
+    const [uname, setUname] = useState('');
+    const [validUname, setValidUname] = useState(false);
+    const [unameFocus, setUnameFocus] = useState(false);
+
+    const [email, setEmail] = useState('');
+    const [validEmail, setValidEmail] = useState(false);
+    const [emailFocus, setEmailFocus] = useState(false);
+ 
+    const [pass, setPass] = useState('');
+    const [validPass, setValidPass] = useState(false);
+    const [passFocus, setPassFocus] = useState(false);
+
+    // Error Message
+    const [errMsg, setErrMsg] = useState('');
+    const [success, setSuccess] = useState(false);
+
+    useEffect (()=> {
+        userReference.current.focus(); //setting focusnya ketika komponen load
+    }, []) 
+
+    useEffect (() => {
+      const result = fullname_valid.test(fullname);
+      console.log(result);
+      console.log(fullname);
+      setValidFullname(result);
+    }, [fullname])
+
+    useEffect (() => {
+      const result = username_valid.test(uname);
+      console.log(result);
+      console.log(uname);
+      setValidUname(result);
+    }, [uname])
+
+    useEffect (() => {
+      const result = email_valid.test(email);
+      console.log(result);
+      console.log(email);
+      setValidEmail(result);
+    }, [email])
+
+    useEffect (() => {
+      const result = pass_valid.test(pass);
+      console.log(result);
+      console.log(pass);
+      setValidPass(result);
+    }, [pass])
+
+    useEffect (() => {
+      setErrMsg('');
+    }, [fullname, uname, email, pass])
+
     
       const handleSubmit = (e) => {
         e.preventDefault();
+
+        console.log('Pendaftaran berhasil');
+        console.log(formData);
+        // Reset form setelah pengiriman
+        setFormData({
+          name: '',
+          username: '',
+          email: '',
+          password: ''
+        });
+      };
+    
+            // const useForm = () => {
+    // const [formData, setFormData] = useState({
+    //     name: '',
+    //     username: '',
+    //     email: '',
+    //     password: ''
+    //   });
+    
+      // const handleChange = (e) => {
+      //   setFormData({ ...formData, [e.target.name]: e.target.value });
+      // };
+
         // Lakukan aksi pendaftaran atau validasi form di sini
         // const fullname = /^[A-Z][a-zA-Z\s]+$/;
         // if(!fullname.test(formData.fullname)) {
@@ -53,23 +126,6 @@ const SignUpPage = () => {
         //   alert('Email harus memiliki format yang benar (contoh: example@example.com');
         //   return;
         // }
-        console.log('Pendaftaran berhasil');
-        console.log(formData);
-        // Reset form setelah pengiriman
-        setFormData({
-          name: '',
-          username: '',
-          email: '',
-          password: ''
-        });
-      };
-
-    //   return{
-    //     formData, 
-    //     handleChange, 
-    //     handleSubmit,
-    //   };
-    // };
 
     // const SignUpPage = () => {
     //   const{formData, handleChange, handleSubmit} = useForm();
@@ -110,28 +166,48 @@ const SignUpPage = () => {
                     {/* Sign Up */}
 
                         {/* Form */}
+                        {/* <p ref={errReference} className={errMsg ? "errmsg" :  "offscreen"}>{errMsg}</p> */}
+                        <p ref={errReference} className={` ${errMsg ? "errmsg" : "offscreen"}`}>{errMsg}</p>
                         <form onSubmit={handleSubmit} className='flex flex-col justify-center items-center p-14 pl-36 space-y-4'>
+
                             {/* Title */}
                             <div className='flex flex-col  items-center space-y-4 mb-4  '>
                               <h1 className='text-slate-700 text-4xl font-semibold '>Sign Up</h1>       
                             </div>
-
                             <div className='relative py-2'>
 
-                                {/* Fullname */}
-                                
-                                <div className="w-full bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
+                                {/* Fullname */}                               
+                                <div className="w-full bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">                            
                                 <MdPermIdentity className='m-[1%] text-slate-700'/>
-                                    <input
+                                    <input className="pl-2 py-1 w-72 focus:outline-none"
                                     type="text"
                                     name="name"
                                     placeholder="Full Name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    className="pl-2 py-1 w-72"
-                                    // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
+                                    ref={userReference}
+                                    autoComplete="off"
+                                    onChange={(e) => setFullname(e.target.value)}
                                     required
+                                    aria-invalid = {validFullname ? "false" : "true"}
+                                    aria-describedby="uidnote"
+                                    onFocus={() => setFullnameFocus(true)}
+                                    onBlur={() => setFullnameFocus(false)}
                                     />
+
+                                    {/* checkmark */}
+                                    {/* <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center"  > */}
+                                      <span className={validFullname ? "valid" : "hidden"}>
+                                        <FcCheckmark/>
+                                      </span>
+                                      <span className={`${validFullname || !fullname ? "hidden" : ""} text-red-600`}>
+                                        <FaTimes/>
+                                      </span>
+                                    {/* </div> */}
+
+                                    {/* Warning */}
+                                    <p id="uidnote" className={fullnameFocus && fullname && !validFullname ? "instructions" : "sr-only"}>
+                                      <BiSolidInfoCircle/> 
+                                      Must start with a capital letter
+                                    </p>   
                                 </div>
 
                                   {/* Username */}
@@ -141,9 +217,9 @@ const SignUpPage = () => {
                                           type="text"
                                           name="username"
                                           placeholder="Username"
-                                          value={formData.username}
-                                          onChange={handleChange}
-                                          className="pl-2 py-1 w-72"
+                                          // value={formData.username}
+                                          // onChange={handleChange}
+                                          className="pl-2 py-1 w-72 focus:outline-none"
                                           required
                                       />
                                   </div>
@@ -155,9 +231,9 @@ const SignUpPage = () => {
                                           type="email"
                                           name="email"
                                           placeholder="Email"
-                                          value={formData.email}
-                                          onChange={handleChange}
-                                          className="pl-2 py-1 w-72 "
+                                          // value={formData.email}
+                                          // onChange={handleChange}
+                                          className="pl-2 py-1 w-72 focus:outline-none "
                                           required
                                       />
                                   </div>
@@ -169,9 +245,9 @@ const SignUpPage = () => {
                                           type="password"
                                           name="password"
                                           placeholder="Password"
-                                          value={formData.password}
-                                          onChange={handleChange}
-                                          className="pl-2 py-1 w-72"
+                                          // value={formData.password}
+                                          // onChange={handleChange}
+                                          className="pl-2 py-1 w-72 focus:outline-none"
                                           required
                                       />
                                        <BiSolidHide/>
