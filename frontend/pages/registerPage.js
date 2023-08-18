@@ -107,7 +107,7 @@ import { BiSolidHide } from "react-icons/bi";
                           placeholder="Full Name"
                           value={formData.name}
                           onChange={handleChange}
-                          className="ml-[2%] w-full"
+                          className="ml-[2%] w-full focus:outline-none"
                           // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
@@ -122,7 +122,7 @@ import { BiSolidHide } from "react-icons/bi";
                           placeholder="Username"
                           value={formData.username}
                           onChange={handleChange}
-                          className="ml-[2%] w-full"
+                          className="ml-[2%] w-full focus:outline-none"
                           maxLength={15}
                           // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
@@ -138,7 +138,7 @@ import { BiSolidHide } from "react-icons/bi";
                           placeholder="Email"
                           value={formData.email}
                           onChange={handleChange}
-                          className='ml-[2%] w-[90%]'
+                          className='ml-[2%] w-[90%] focus:outline-none'
                           // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                           required
                         />
@@ -154,7 +154,7 @@ import { BiSolidHide } from "react-icons/bi";
                         placeholder="Password"
                         value={formData.password}
                         onChange={handleChange}
-                        className='ml-[2%] w-[90%]'
+                        className='ml-[2%] w-[90%] focus:outline-none'
                         // className="w-full border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black"
                         required                    
                       />
