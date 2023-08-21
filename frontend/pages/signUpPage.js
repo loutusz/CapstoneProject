@@ -2,7 +2,7 @@ import React, {useState, useRef, useEffect} from 'react';
 import Head from 'next/head';
 import { FaRegEnvelope, FaTimes } from 'react-icons/fa';
 import { MdPermIdentity, MdLockOutline } from 'react-icons/md';
-import { BiSolidHide, BiSolidInfoCircle } from "react-icons/bi";
+import { BiSolidHide, BiSolidInfoCircle, BiHide, BiShow } from "react-icons/bi";
 import { FcCheckmark} from "react-icons/fc";
 import axios from './api/axios'
 
@@ -17,6 +17,9 @@ const signup_url = '/signUpPage'
 const SignUpPage = () => {
     const userReference = useRef();
     const errReference = useRef();  
+
+    // Toggle Password
+    const [showPassword, setShowPassword] = useState(false);
    
     // const fullnameReference = useRef();
     // const emailReference = useRef();  
@@ -123,7 +126,7 @@ const SignUpPage = () => {
             </div>
             {/* block h-screen items-center justify-center p-4 md:flex */}
             {/* Backkground */}
-            <div className='bg-gradient-to-r from-cyan-500/10 via-teal-300/10 to-sky-200/10 flex justify-center items-center h-screen p-4'>
+            <div className='bg-gradient-to-r from-cyan-500/10 via-teal-300/10 to-sky-200/10 block h-screen items-center justify-center p-4 md:flex'>
             {/* space-y-8 w-full md:flex-row */}
                {/* Container */}
                 <div className=' bg-white flex flex-col items-center max-w-screen-lg overflow-hidden rounded-lg shadow-[0_3px_10px_rgb(0,0,0,1)] space-y-8 w-full md:flex-row text-slate-700 '>
@@ -264,7 +267,7 @@ const SignUpPage = () => {
                                   <div className="w-full bg-white flex items-center mb-[3%] border-gray-300 border rounded-lg px-3 py-2 focus:outline-none shadow shadow-black ">
                                       <MdLockOutline className='m-[1%] text-slate-700'/>
                                       <input className="pl-2 py-1 w-72 focus:outline-none"
-                                          type="password"
+                                          type={showPassword ? 'text' : 'password'}
                                           name="password"
                                           placeholder="Password"
                                           onChange={(e) => setPass(e.target.value)}
@@ -274,7 +277,17 @@ const SignUpPage = () => {
                                           onFocus={() => setPassFocus(true)}
                                           onBlur={() => setPassFocus(false)}
                                       />
-                                       <BiSolidHide/>
+                                       {showPassword ? (
+                                        <BiHide
+                                            onClick={() => setShowPassword(false)}
+                                            className="cursor-pointer"
+                                        />
+                                    ) : (
+                                        <BiShow
+                                            onClick={() => setShowPassword(true)}
+                                            className="cursor-pointer"
+                                        />
+                                    )}
 
                                        {/* checkmark */}
                                         {/* <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center"  > */}
