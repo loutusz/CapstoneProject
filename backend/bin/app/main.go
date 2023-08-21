@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	userHandler "login-api-jwt/bin/modules/user/handlers"
 	userRepositoryCommands "login-api-jwt/bin/modules/user/repositories/commands"
 	userRepositoryQueries "login-api-jwt/bin/modules/user/repositories/queries"
@@ -26,11 +25,7 @@ import (
 
 func main() {
 	// Load environment variables from .env file
-	err := godotenv.Load()
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	godotenv.Load()
 
 	// Create instance of Gin server
 	srv := &servers.GinServer{}
@@ -50,8 +45,19 @@ func main() {
 	setProjectHTTP(orm, srv)
 	setMessageProviderHTTP(orm, srv)
 
-	// Start Gin server, listening on port 8050
-	srv.Start(":8050", orm)
+	// Get port from environment variables, or use default port 8050
+	defaultPort := "8050"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
+
+	// Start Gin server on given port
+	err := srv.Start(port, orm)
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 func setUserHTTP(orm *databases.ORM, srv *servers.GinServer) {
