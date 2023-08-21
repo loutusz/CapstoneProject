@@ -12,6 +12,11 @@ import (
 	projectRepositoryQueries "login-api-jwt/bin/modules/project/repositories/queries"
 	projectUsecases "login-api-jwt/bin/modules/project/usecases"
 
+	messageproviderHandler "login-api-jwt/bin/modules/messageprovider/handlers"
+	messageproviderRepositoryCommands "login-api-jwt/bin/modules/messageprovider/repositories/commands"
+	messageproviderRepositoryQueries "login-api-jwt/bin/modules/messageprovider/repositories/queries"
+	messageproviderUsecases "login-api-jwt/bin/modules/messageprovider/usecases"
+
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/servers"
 	"os"
@@ -43,6 +48,7 @@ func main() {
 	// Set up HTTP routes(orm) and handlers(srv)
 	setUserHTTP(orm, srv)
 	setProjectHTTP(orm, srv)
+	setMessageProviderHTTP(orm, srv)
 
 	// Start Gin server, listening on port 8050
 	srv.Start(":8050", orm)
@@ -72,4 +78,17 @@ func setProjectHTTP(orm *databases.ORM, srv *servers.GinServer) {
 
 	// Initialize project HTTP handlers with query and command use cases, and link them with the Gin server
 	projectHandler.InitProjectHTTPHandler(projectQueryUsecase, projectCommandUsecase, srv)
+}
+
+func setMessageProviderHTTP(orm *databases.ORM, srv *servers.GinServer) {
+	// Create a user query repository and use case for reading messageprovider data
+	messageproviderQueryRepository := messageproviderRepositoryQueries.NewQueryRepository(orm)
+	messageproviderQueryUsecase := messageproviderUsecases.NewQueryUsecase(messageproviderQueryRepository, orm)
+
+	// Create a messageprovider command repository and use case for writing messageprovider data
+	messageproviderCommandRepository := messageproviderRepositoryCommands.NewCommandRepository(orm)
+	messageproviderCommandUsecase := messageproviderUsecases.NewCommandUsecase(messageproviderCommandRepository, orm)
+
+	// Initialize messageprovider HTTP handlers with query and command use cases, and link them with the Gin server
+	messageproviderHandler.InitMessageProviderHTTPHandler(messageproviderQueryUsecase, messageproviderCommandUsecase, srv)
 }

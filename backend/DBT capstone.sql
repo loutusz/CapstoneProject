@@ -17,7 +17,7 @@ CREATE TABLE "projects" (
 );
 
 CREATE TABLE "message_providers" (
-  "provider_id" varchar PRIMARY KEY,
+  "id" varchar PRIMARY KEY,
   "project_id" varchar,
   "provider_type" varchar,
   "provider_label" varchar,
