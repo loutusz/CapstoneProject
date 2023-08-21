@@ -89,7 +89,6 @@ const SignUpPage = () => {
             }
           )
           console.log(resp.data);
-          // console.log(resp.accesstoken)
           console.log(JSON.stringify(resp));
           setSuccess(true);
 
@@ -114,22 +113,6 @@ const SignUpPage = () => {
         //   password: ''
         // });
       };
-    
-            // const useForm = () => {
-    // const [formData, setFormData] = useState({
-    //     name: '',
-    //     username: '',
-    //     email: '',
-    //     password: ''
-    //   });
-    
-      // const handleChange = (e) => {
-      //   setFormData({ ...formData, [e.target.name]: e.target.value });
-      // };
-
-    // const SignUpPage = () => {
-    //   const{formData, handleChange, handleSubmit} = useForm();
-    //   const{show,showPass} = useState(false);
 
       return(
         <div>
@@ -326,7 +309,7 @@ const SignUpPage = () => {
                             </div>
                         </form>
 
-                        {/* pop up delete */}
+                        {/* pop up succes */}
                         {success && (
                         <div className='fixed inset-0 flex items-center justify-center z-50 bg-black opacity-75'>
                           <div className='bg-slate-700 p-8 rounded-lg flex flex-col text-white'>
