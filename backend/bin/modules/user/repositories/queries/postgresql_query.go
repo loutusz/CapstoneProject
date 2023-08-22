@@ -36,12 +36,12 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 
 }
 
-// FindOneByName retrieves a user record from database by name
-func (q QueryRepository) FindOneByName(ctx *gin.Context, name string) utils.Result {
+// FindOneByUsername retrieves a user record from database by username
+func (q QueryRepository) FindOneByUsername(ctx *gin.Context, username string) utils.Result {
 	var userModel models.User
 
-	// Use ORM to find a user record by name
-	r := q.ORM.DB.First(&userModel, "name = ?", name)
+	// Use ORM to find a user record by username
+	r := q.ORM.DB.First(&userModel, "username = ?", username)
 	// Prepare the result, including retrieved user data and database operation result
 	output := utils.Result{
 		Data: userModel,
