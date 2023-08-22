@@ -2,6 +2,7 @@ package servers
 
 import (
 	"errors"
+	"github.com/gin-contrib/cors"
 	"fmt"
 	"log"
 	"login-api-jwt/bin/pkg/databases"
@@ -35,10 +36,11 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 	// Setup the endpoint
 	endpoint := "0.0.0.0:" + port
 
+	s.Gin.Use(cors.Default())
+
 	// Create a message indicating server startup
 	startupMessage := fmt.Sprintf("Server is running on %s", endpoint)
 	log.Println(startupMessage) // Log the startup message
-
 	if err := http.ListenAndServe(endpoint, s.Gin.Handler()); err != nil {
 		log.Fatal(err)
 	}
