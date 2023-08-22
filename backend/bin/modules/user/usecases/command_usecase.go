@@ -94,13 +94,25 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 	// Create user record in the database
 	r := q.UserRepositoryCommand.Create(ctx, userModel)
 	if r.DB.Error != nil {
+		
+
 		// Check if the error is due to a duplicate email or username
+
+		if strings.Contains(r.DB.Error.Error(), "duplicate key value violates unique constraint \"users_username_key\"") {
+			// If data is already found, abort with status "email or username already used"
+			result.Message = "email or username already registered"
+			ctx.AbortWithStatusJSON(result.Code, result)
+			return
+		}
+
 		if strings.Contains(r.DB.Error.Error(), "duplicate key value violates unique constraint \"users_email_key\"") {
 			// If data is already found, abort with status "email or username already used"
 			result.Message = "email or username already registered"
 			ctx.AbortWithStatusJSON(result.Code, result)
 			return
 		}
+
+		
 		result.Code = http.StatusInternalServerError
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return
