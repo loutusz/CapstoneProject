@@ -40,6 +40,9 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000", "https://jico-api.up.railway.app/"} // Replace with your frontend origin
+	config.AllowMethods = []string{"PUT","POST","GET","DELETE", "PATCH"}
+	config.AllowHeaders = []string{"Origin"}
+	config.ExposeHeaders = []string{"Content-Length"}
 	config.AllowCredentials = true
 
 	s.Gin.Use(cors.New(config))
