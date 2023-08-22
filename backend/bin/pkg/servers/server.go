@@ -36,7 +36,13 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 	// Setup the endpoint
 	endpoint := "0.0.0.0:" + port
 
-	s.Gin.Use(cors.Default())
+	// s.Gin.Use(cors.Default())
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000", "https://jico-api.up.railway.app/"} // Replace with your frontend origin
+	config.AllowCredentials = true
+
+	s.Gin.Use(cors.New(config))
 
 	// Create a message indicating server startup
 	startupMessage := fmt.Sprintf("Server is running on %s", endpoint)
