@@ -19,8 +19,9 @@ type UsecaseCommand interface {
 }
 
 type RepositoryQuery interface {
-	FindAll(ctx *gin.Context) utils.Result
+	FindAll(ctx *gin.Context, skip, limit int) utils.Result
 	FindOneByID(ctx *gin.Context, id string) utils.Result
+	CountData(ctx *gin.Context) utils.Result
 	// FindOneByName(ctx *gin.Context, name string) utils.Result
 }
 
