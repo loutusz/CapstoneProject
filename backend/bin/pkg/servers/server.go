@@ -2,11 +2,12 @@ package servers
 
 import (
 	"errors"
-	"github.com/gin-contrib/cors"
 	"fmt"
 	"log"
 	"login-api-jwt/bin/pkg/databases"
 	"net/http"
+
+	"github.com/gin-contrib/cors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,10 +41,9 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000", "https://jico-api.up.railway.app/"} // Replace with your frontend origin
-	config.AllowMethods = []string{"PUT","POST","GET","DELETE", "PATCH"}
-	config.AllowHeaders = []string{"Origin"}
-	config.ExposeHeaders = []string{"Content-Length"}
 	config.AllowCredentials = true
+	config.AllowHeaders = []string{"Content-Type", "Authorization", "Origin", "Accept", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods", "Access-Control-Allow-Credentials"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 	s.Gin.Use(cors.New(config))
 

@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"errors"
+	"log"
 	"login-api-jwt/bin/modules/user"
 	"login-api-jwt/bin/modules/user/models"
 	"login-api-jwt/bin/pkg/databases"
@@ -54,6 +55,10 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 
 	// Capitalize first letter of user's name
 	userModel.Name = strings.Title(userModel.Name)
+
+	ctx.Header("Access-Control-Allow-Origin", "*")
+
+	log.Println(userModel.Username)
 
 	// Validate user's email format
 	validEmail := validators.IsValidEmail(userModel.Email)
