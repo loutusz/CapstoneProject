@@ -5,6 +5,7 @@ import (
 	userRepositoryCommands "login-api-jwt/bin/modules/user/repositories/commands"
 	userRepositoryQueries "login-api-jwt/bin/modules/user/repositories/queries"
 	userUsecases "login-api-jwt/bin/modules/user/usecases"
+	"net/http"
 
 	projectHandler "login-api-jwt/bin/modules/project/handlers"
 	projectRepositoryCommands "login-api-jwt/bin/modules/project/repositories/commands"
@@ -20,6 +21,7 @@ import (
 	"login-api-jwt/bin/pkg/servers"
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
@@ -41,6 +43,9 @@ func main() {
 	// srv.InitTryRoutes()
 
 	// Set up HTTP routes(orm) and handlers(srv)
+	srv.Gin.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"message": "This service already running"})
+	})
 	setUserHTTP(orm, srv)
 	setProjectHTTP(orm, srv)
 	setMessageProviderHTTP(orm, srv)

@@ -5,6 +5,7 @@ import (
 	"login-api-jwt/bin/modules/user"
 	"login-api-jwt/bin/modules/user/models"
 	"login-api-jwt/bin/pkg/databases"
+	"login-api-jwt/bin/pkg/utils"
 	"login-api-jwt/bin/pkg/utils/validators"
 	"net/http"
 	"os"
@@ -34,10 +35,18 @@ func NewCommandUsecase(q user.RepositoryCommand, orm *databases.ORM) user.Usecas
 
 // PostRegister handles user registration
 func (q CommandUsecase) PostRegister(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Register User",
+		Status:  false,
+	}
 	var userModel models.User
 	err := ctx.ShouldBind(&userModel)
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		result.Code = http.StatusConflict
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
 	}
 
 	// Generate a unique ID for user
@@ -48,28 +57,31 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 
 	// Validate user's email format
 	validEmail := validators.IsValidEmail(userModel.Email)
-	validUsername := validators.IsValidUsername(userModel.Username)
-	ValidPassword := validators.IsValidPassword(userModel.Password)
-
 	if !validEmail {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "email not valid"})
+		result.Message = "email not valid"
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}
 
+	validUsername := validators.IsValidUsername(userModel.Username)
 	if !validUsername {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "username not valid"})
+		result.Message = "username not valid"
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}
 
+	ValidPassword := validators.IsValidPassword(userModel.Password)
 	if !ValidPassword {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "password not valid"})
+		result.Message = "password not valid"
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}
 
 	// Hash user's password before storing it in the database
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userModel.Password), bcrypt.DefaultCost)
 	if err != nil {
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 	userModel.Password = string(hashedPassword)
@@ -80,11 +92,12 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 		// Check if the error is due to a duplicate email or username
 		if strings.Contains(r.DB.Error.Error(), "duplicate key value violates unique constraint \"users_email_key\"") {
 			// If data is already found, abort with status "email or username already used"
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "email or username already used"})
+			result.Message = "email or username already registered"
+			ctx.AbortWithStatusJSON(result.Code, result)
 			return
 		}
-
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -102,19 +115,32 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 	// Check if an error occurred while saving
 	if r.DB.Error != nil {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    userRegisterResponse,
+		Message: "Success Register User",
+		Status:  true,
+	}
 	// If user record was successfully saved, respond with user's registration data
-	ctx.JSON(http.StatusOK, userRegisterResponse)
+	ctx.JSON(http.StatusOK, result)
 }
 
 // PostLogin handles user login
 func (q CommandUsecase) PostLogin(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusUnauthorized,
+		Data:    nil,
+		Message: "Incorrect username or password",
+		Status:  false,
+	}
 	var userLoginRequest models.LoginRequest
 	err := ctx.ShouldBind(&userLoginRequest)
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -123,16 +149,18 @@ func (q CommandUsecase) PostLogin(ctx *gin.Context) {
 	if r.DB.Error != nil {
 		if errors.Is(r.DB.Error, gorm.ErrRecordNotFound) {
 			// If data is not found in the database, abort with status Unauthorized
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			ctx.AbortWithStatusJSON(result.Code, result)
 			return
 		}
-		ctx.AbortWithError(http.StatusInternalServerError, r.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
 	}
 
 	// Compare the provided password with the hashed password in the database
 	err = bcrypt.CompareHashAndPassword([]byte(r.Password), []byte(userLoginRequest.Password))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Incorrect username or password"})
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -153,7 +181,8 @@ func (q CommandUsecase) PostLogin(ctx *gin.Context) {
 	t, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 	if err != nil {
 		// fmt.Println("found jwt error")
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -166,6 +195,13 @@ func (q CommandUsecase) PostLogin(ctx *gin.Context) {
 		AccessToken: t,
 	}
 
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    userLoginResponse,
+		Message: "Success Login User",
+		Status:  true,
+	}
+
 	// Respond to request with an HTTP 200 OK status code and userLoginResponse data in JSON format
-	ctx.JSON(http.StatusOK, userLoginResponse)
+	ctx.JSON(result.Code, result)
 }

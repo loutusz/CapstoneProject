@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"login-api-jwt/bin/modules/user"
 	"login-api-jwt/bin/pkg/databases"
+	"login-api-jwt/bin/pkg/utils"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,25 +28,43 @@ func NewQueryUsecase(q user.RepositoryQuery, orm *databases.ORM) user.UsecaseQue
 
 // GetByID retrieves user data by ID and responds with the result
 func (q QueryUsecase) GetByID(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Get Data User",
+		Status:  false,
+	}
 	id := ctx.Param("id")
 
 	// Call FindOneByID method to retrieve user data by ID
-	ret := q.UserRepositoryQuery.FindOneByID(ctx, id)
+	userData := q.UserRepositoryQuery.FindOneByID(ctx, id)
 	// If there was an error during query, abort with a Bad Request status
-	if ret.DB.Error != nil {
-		if errors.Is(ret.DB.Error, gorm.ErrRecordNotFound) {
+	if userData.DB.Error != nil {
+		if errors.Is(userData.DB.Error, gorm.ErrRecordNotFound) {
+			if errors.Is(userData.DB.Error, gorm.ErrRecordNotFound) {
+				result.Code = http.StatusNotFound
+				result.Message = "Data Not Found"
+				ctx.AbortWithStatusJSON(result.Code, result)
+				return
+			}
 			// If data is not found in the database, abort with status Unauthorized
-			ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("User with id %s not found", id)})
+			ctx.AbortWithStatusJSON(http.StatusNotFound, result)
 			return
 		}
 
-		ctx.AbortWithError(http.StatusBadRequest, ret.DB.Error)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}
 
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    userData.Data,
+		Message: "Success Get Data User",
+		Status:  true,
+	}
+
 	// Respond with retrieved user data in JSON format
-	res := ret.Data
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusOK, result)
 }
 
 // GetAccess responds with a success message indicating user access
@@ -54,13 +73,36 @@ func (q QueryUsecase) GetAccess(ctx *gin.Context) {
 }
 
 // GetByName retrieves user data by name and responds with the result
-func (q QueryUsecase) GetByName(ctx *gin.Context) {
-	name := ctx.Param("name")
-	fmt.Printf("name access %s", name)
+func (q QueryUsecase) GetByUsername(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Get Data User",
+		Status:  false,
+	}
+	username := ctx.Param("username")
+	fmt.Printf("username access %s", username)
 
-	// Call FindOneByName method to retrieve user data by name
-	ret := q.UserRepositoryQuery.FindOneByName(ctx, name)
+	// Call FindOneByUsername method to retrieve user data by username
+	userData := q.UserRepositoryQuery.FindOneByUsername(ctx, username)
+	if userData.DB.Error != nil {
+		if errors.Is(userData.DB.Error, gorm.ErrRecordNotFound) {
+			result.Code = http.StatusNotFound
+			result.Message = "Data Not Found"
+			ctx.AbortWithStatusJSON(result.Code, result)
+			return
+		}
 
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    userData.Data,
+		Message: "Success Get Data User",
+		Status:  true,
+	}
 	// Respond with retrieved user data in JSON format
-	ctx.JSON(http.StatusOK, ret.Data)
+	ctx.JSON(http.StatusOK, result)
 }
