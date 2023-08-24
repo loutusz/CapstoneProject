@@ -63,15 +63,3 @@ func (q QueryUsecase) GetAll(ctx *gin.Context) {
 func (q QueryUsecase) GetAccess(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "messageprovider access success"})
 }
-
-// // GetByName retrieves messageprovider data by name and responds with the result
-// func (q QueryUsecase) GetByName(ctx *gin.Context) {
-// 	name := ctx.Param("name")
-// 	fmt.Printf("name access %s", name)
-
-// 	// Call FindOneByName method to retrieve messageprovider data by name
-// 	ret := q.MessageProviderRepositoryQuery.FindOneByName(ctx, name)
-
-// 	// Respond with retrieved messageprovider data in JSON format
-// 	ctx.JSON(http.StatusOK, ret.Data)
-// }

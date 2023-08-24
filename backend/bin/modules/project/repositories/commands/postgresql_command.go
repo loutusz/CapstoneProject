@@ -44,3 +44,14 @@ func (c *CommandRepository) Save(ctx *gin.Context, p models.Project) utils.Resul
 	}
 	return output
 }
+
+func (c *CommandRepository) Updates(ctx *gin.Context, p models.Project) utils.Result {
+
+	r := c.ORM.DB.Updates(&p)
+
+	output := utils.Result{
+		Data: p,
+		DB:   r,
+	}
+	return output
+}

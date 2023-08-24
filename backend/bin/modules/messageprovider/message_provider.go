@@ -16,6 +16,7 @@ type UsecaseQuery interface {
 
 type UsecaseCommand interface {
 	PostMessageProvider(ctx *gin.Context)
+	PutMessageProvider(ctx *gin.Context)
 }
 
 type RepositoryQuery interface {
@@ -27,5 +28,6 @@ type RepositoryQuery interface {
 type RepositoryCommand interface {
 	Create(ctx *gin.Context, u models.MessageProvider) utils.Result
 	Save(ctx *gin.Context, u models.MessageProvider) utils.Result
+	Updates(ctx *gin.Context, u models.MessageProvider) utils.Result
 	// FindPassword(ctx *gin.Context, u string) utils.FindPasswordResult
 }

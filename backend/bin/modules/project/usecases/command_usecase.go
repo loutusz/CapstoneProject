@@ -88,3 +88,33 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 	// If project record was successfully saved, respond with project's registration data
 	ctx.JSON(http.StatusOK, projectRegisterResponse)
 }
+
+func (q CommandUsecase) PutProject(ctx *gin.Context) {
+	projectID := ctx.Param("id")
+	var projectModel models.Project
+	err := ctx.ShouldBind(&projectModel)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+	}
+
+	projectModel.ID = projectID
+
+	// Response data for successful registration
+	Response := projectModel
+
+	r := q.ProjectRepositoryCommand.Updates(ctx, Response)
+	if r.DB.Error != nil {
+		// If there was an error, return Internal Server Error with error message
+		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		return
+	}
+
+	if r.DB.RowsAffected == 0 {
+		// If there was an error, return Internal Server Error with error message
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Project ID not available"})
+		return
+	}
+	// If messageprovider record was successfully saved, respond with messageprovider's registration data
+	ctx.JSON(http.StatusOK, Response)
+
+}
