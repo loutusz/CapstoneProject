@@ -94,7 +94,6 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 	// Create user record in the database
 	r := q.UserRepositoryCommand.Create(ctx, userModel)
 	if r.DB.Error != nil {
-		
 
 		// Check if the error is due to a duplicate email or username
 
@@ -112,7 +111,6 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 			return
 		}
 
-		
 		result.Code = http.StatusInternalServerError
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return
@@ -156,6 +154,7 @@ func (q CommandUsecase) PostLogin(ctx *gin.Context) {
 	}
 	var userLoginRequest models.LoginRequest
 	err := ctx.ShouldBind(&userLoginRequest)
+	ctx.Header("Access-Control-Allow-Origin", "*")
 	if err != nil {
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return

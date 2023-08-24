@@ -24,4 +24,5 @@ func InitUserHTTPHandler(uq user.UsecaseQuery, uc user.UsecaseCommand, s *server
 	s.Gin.POST("/user/SignUp", handler.UserUsecaseCommand.PostRegister)
 	s.Gin.GET("/user/username/:username", handler.UserUsecaseQuery.GetByUsername)
 	s.Gin.POST("/user/SignIn", handler.UserUsecaseCommand.PostLogin)
+	s.Gin.GET("/user/all", handler.UserUsecaseQuery.GetAll)
 }

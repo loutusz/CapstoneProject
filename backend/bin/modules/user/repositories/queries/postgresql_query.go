@@ -50,3 +50,32 @@ func (q QueryRepository) FindOneByUsername(ctx *gin.Context, username string) ut
 	return output
 
 }
+
+// FindOneByID retrieves a user record from database by ID
+
+func (q QueryRepository) FindAll(ctx *gin.Context, skip, limit int) utils.Result {
+	var usersModel []models.User
+
+	// Use ORM to find a user record by ID
+	r := q.ORM.DB.Offset(skip).Limit(limit).Find(&usersModel)
+
+	// Prepare the result, including retrieved user data and database operation result
+	output := utils.Result{
+		Data: usersModel,
+		DB:   r,
+	}
+	return output
+
+}
+
+func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
+	var userModel models.User
+	var count int64
+	r := q.ORM.DB.Find(&userModel).Count(&count)
+
+	output := utils.Result{
+		Data: count,
+		DB:   r,
+	}
+	return output
+}
