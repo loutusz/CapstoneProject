@@ -13,7 +13,7 @@ const fullname_valid = /^[A-Z][a-zA-Z\s]*$/;
 const username_valid = /^[a-zA-Z][a-zA-Z0-9_]{4,14}$/; //bebas min 5-15 huruf bole spasi
 const email_valid = /^[a-zA-Z0-9_.]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; //dapat menggunakan angka, huruf, _ dan . sebelum @
 const pass_valid = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{6,10}$/; //ada satu huruf dan angka yang required dengan min.6-10 huruf
-const signup_url = "/user/register";
+const signup_url = "/user/SignUp";
 
 const SignUpPage = () => {
   const userReference = useRef();
