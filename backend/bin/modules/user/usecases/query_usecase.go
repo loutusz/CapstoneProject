@@ -6,7 +6,10 @@ import (
 	"login-api-jwt/bin/modules/user"
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/utils"
+	"math"
 	"net/http"
+	"reflect"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -105,4 +108,76 @@ func (q QueryUsecase) GetByUsername(ctx *gin.Context) {
 	}
 	// Respond with retrieved user data in JSON format
 	ctx.JSON(http.StatusOK, result)
+}
+
+// Get All retrieves All user data with pagination result
+func (q QueryUsecase) GetAll(ctx *gin.Context) {
+	var totalCount, page, limit int
+	var err error
+
+	page, err = strconv.Atoi(ctx.Query("page"))
+	// handling when error set default page value 1
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	// handling when error set default limit value 10
+	limit, err = strconv.Atoi(ctx.Query("limit"))
+	if err != nil || limit == 0 {
+		limit = 10
+	}
+
+	// count data user
+	var count = q.UserRepositoryQuery.CountData(ctx)
+
+	// parsing result count data to Integer
+	if reflect.ValueOf(count.Data).CanInt() {
+		totalCount = int(reflect.ValueOf(count.Data).Int())
+	}
+
+	// calculate total page
+	var totalPage int = int(math.Ceil(float64(totalCount) / float64(limit)))
+	// handling if max total page
+	if page > totalPage {
+		page = totalPage
+	}
+
+	// set skip for offset data
+	var skip = limit * (page - 1)
+	var result utils.ResultResponsePagination = utils.ResultResponsePagination{
+		Code:      http.StatusBadRequest,
+		Data:      nil,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Failed Get Data User",
+		Status:    false,
+	}
+
+	if totalCount == 0 {
+		result.Code = http.StatusNotFound
+		result.Message = "Data Not Found"
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	getUserData := q.UserRepositoryQuery.FindAll(ctx, skip, limit)
+	if getUserData.DB.Error != nil {
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	result = utils.ResultResponsePagination{
+		Code:      http.StatusOK,
+		Data:      getUserData.Data,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Success Get Data User",
+		Status:    true,
+	}
+	ctx.JSON(http.StatusOK, result)
+	return
 }

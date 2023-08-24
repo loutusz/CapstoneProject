@@ -22,7 +22,6 @@ func InitProjectHTTPHandler(uq project.UsecaseQuery, uc project.UsecaseCommand, 
 	s.Gin.GET("/project/", handler.ProjectUsecaseQuery.GetAccess)
 	s.Gin.GET("/project/all", handler.ProjectUsecaseQuery.GetAll)
 	s.Gin.GET("/project/id/:id", handler.ProjectUsecaseQuery.GetByID)
-	s.Gin.POST("/project/new-project", handler.ProjectUsecaseCommand.PostProject)
-	// s.Gin.GET("/project/name/:name", handler.ProjectUsecaseQuery.GetByName)
-	// s.Gin.POST("/project/login", handler.ProjectUsecaseCommand.PostLogin)
+	s.Gin.POST("/project/new", handler.ProjectUsecaseCommand.PostProject)
+	s.Gin.PUT("/project/edit/:id", handler.ProjectUsecaseCommand.PutProject)
 }

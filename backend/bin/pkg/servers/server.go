@@ -46,6 +46,7 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 	s.Gin.Use(cors.New(config))
+	s.Gin.Use(CORSMiddleware())
 
 	// Create a message indicating server startup
 	startupMessage := fmt.Sprintf("Server is running on %s", endpoint)
@@ -54,4 +55,11 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 		log.Fatal(err)
 	}
 	return nil
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Header("Access-Control-Allow-Origin", "*")
+		ctx.Next()
+	}
 }

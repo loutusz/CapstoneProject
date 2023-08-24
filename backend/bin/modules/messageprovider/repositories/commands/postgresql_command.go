@@ -44,3 +44,14 @@ func (c *CommandRepository) Save(ctx *gin.Context, p models.MessageProvider) uti
 	}
 	return output
 }
+
+func (c *CommandRepository) Updates(ctx *gin.Context, m models.MessageProvider) utils.Result {
+
+	r := c.ORM.DB.Updates(&m)
+
+	output := utils.Result{
+		Data: m,
+		DB:   r,
+	}
+	return output
+}

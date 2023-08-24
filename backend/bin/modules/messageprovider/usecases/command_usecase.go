@@ -40,8 +40,8 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 
 	r := q.MessageProviderRepositoryCommand.Create(ctx, messageproviderModel)
 	if r.DB.Error != nil {
-		if strings.Contains(r.DB.Error.Error(), "insert or update on table \"message_providers\" violates foreign key constraint \"message_providers_project_id_fkey\"") {
-			// If data is already found, abort with status "email or projectname already used"
+		if strings.Contains(r.DB.Error.Error(), "insert or update on table \"message_providers\" violates foreign key constraint \"message_providers_messageProvider_id_fkey\"") {
+			// If data is already found, abort with status "email or messageProvidername already used"
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "user id not valid"})
 			return
 		}
@@ -62,6 +62,37 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
 		return
 	}
+
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data
 	ctx.JSON(http.StatusOK, messageproviderRegisterResponse)
+}
+
+func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
+	messageProviderID := ctx.Param("id")
+	var messageProviderModel models.MessageProvider
+	err := ctx.ShouldBind(&messageProviderModel)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, "input field not valid")
+	}
+
+	messageProviderModel.ID = messageProviderID
+
+	// Response data for successful registration
+	Response := messageProviderModel
+
+	r := q.MessageProviderRepositoryCommand.Updates(ctx, Response)
+	if r.DB.Error != nil {
+		// If there was an error, return Internal Server Error with error message
+		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		return
+	}
+
+	if r.DB.RowsAffected == 0 {
+		// If there was an error, return Internal Server Error with error message
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Message Provider ID not available"})
+		return
+	}
+	// If messageprovider record was successfully saved, respond with messageprovider's registration data
+	ctx.JSON(http.StatusOK, Response)
+
 }

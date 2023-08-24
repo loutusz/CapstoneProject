@@ -61,18 +61,3 @@ func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
 	}
 	return output
 }
-
-// // FindOneByName retrieves a project record from database by name
-// func (q QueryRepository) FindOneByName(ctx *gin.Context, name string) utils.Result {
-// 	var projectModel models.Project
-
-// 	// Use ORM to find a project record by name
-// 	r := q.ORM.DB.First(&projectModel, "name = ?", name)
-// 	// Prepare the result, including retrieved project data and database operation result
-// 	output := utils.Result{
-// 		Data: projectModel,
-// 		DB:   r,
-// 	}
-// 	return output
-
-// }
