@@ -19,9 +19,10 @@ type GinServer struct {
 
 // initiate new gin server
 func (s *GinServer) InitGin() *GinServer {
-	g := gin.Default() // make new gin instance
-	s.Gin = g          // assign new gin instace from g variable
-	return s           // return new gin server
+	g := gin.Default()
+	g.Use(CORSMiddleware()) // make new gin instance
+	s.Gin = g               // assign new gin instace from g variable
+	return s                // return new gin server
 }
 
 // ready
@@ -42,11 +43,11 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"http://localhost:3000", "https://jico-api.up.railway.app/"} // Replace with your frontend origin
 	config.AllowCredentials = true
+
 	config.AllowHeaders = []string{"Content-Type", "Authorization", "Origin", "Accept", "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods", "Access-Control-Allow-Credentials"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 
 	s.Gin.Use(cors.New(config))
-	s.Gin.Use(CORSMiddleware())
 
 	// Create a message indicating server startup
 	startupMessage := fmt.Sprintf("Server is running on %s", endpoint)
@@ -60,6 +61,7 @@ func (s *GinServer) Start(port string, db *databases.ORM) error {
 func CORSMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		ctx.Header("Access-Control-Allow-Origin", "*")
+		fmt.Println("check cors ok")
 		ctx.Next()
 	}
 }
