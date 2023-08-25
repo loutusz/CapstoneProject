@@ -37,6 +37,7 @@ func (q QueryRepository) FindAll(ctx *gin.Context, skip, limit int) utils.Result
 	return output
 
 }
+
 func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 	var projectModel models.Project
 
@@ -60,4 +61,19 @@ func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
 		DB:   r,
 	}
 	return output
+}
+
+func (q QueryRepository) FindByUserID(ctx *gin.Context, id string, skip, limit int) utils.Result {
+	var projectsModel []models.Project
+
+	// Use ORM to find a project record by ID
+	r := q.ORM.DB.Where("user_id = ?", id).Offset(skip).Limit(limit).Find(&projectsModel)
+
+	// Prepare the result, including retrieved project data and database operation result
+	output := utils.Result{
+		Data: projectsModel,
+		DB:   r,
+	}
+	return output
+
 }

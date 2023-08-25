@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -32,6 +33,7 @@ func NewCommandUsecase(q project.RepositoryCommand, query project.RepositoryQuer
 
 // PostRegister handles project registration
 func (q CommandUsecase) PostProject(ctx *gin.Context) {
+
 	var result utils.ResultResponse = utils.ResultResponse{
 		Code:    http.StatusBadRequest,
 		Data:    nil,
@@ -44,6 +46,28 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
+
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		return
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+	token, err := utils.ValidateUserJWTToToken(tokenString)
+
+	if err != nil {
+		if err.Error() == "invalid token" {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+	}
+	projectModel.User_id = claims["id"].(string)
 
 	// Generate a unique ID for project
 	projectModel.ID = uuid.NewString()
@@ -95,13 +119,37 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 
 func (q CommandUsecase) PutProject(ctx *gin.Context) {
 	projectID := ctx.Param("id")
+
 	var projectModel models.Project
+
 	err := ctx.ShouldBind(&projectModel)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 	}
 
 	projectModel.ID = projectID
+
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		return
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+	token, err := utils.ValidateUserJWTToToken(tokenString)
+
+	if err != nil {
+		if err.Error() == "invalid token" {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+	}
+	projectModel.User_id = claims["id"].(string)
 
 	// Response data for successful registration
 	Response := projectModel
@@ -132,6 +180,22 @@ func (q CommandUsecase) DeleteProject(ctx *gin.Context) {
 	}
 
 	var id string = ctx.Param("id")
+
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		return
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+	_, err := utils.ValidateUserJWTToToken(tokenString)
+
+	if err != nil {
+		if err.Error() == "invalid token" {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+	}
 
 	isExistData := q.projectRepositoryQuery.FindOneByID(ctx, id)
 	if isExistData.DB.Error != nil {
