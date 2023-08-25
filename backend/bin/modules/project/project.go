@@ -17,6 +17,7 @@ type UsecaseQuery interface {
 type UsecaseCommand interface {
 	PostProject(ctx *gin.Context)
 	PutProject(ctx *gin.Context)
+	DeleteProject(ctx *gin.Context)
 }
 
 type RepositoryQuery interface {
@@ -29,4 +30,5 @@ type RepositoryCommand interface {
 	Create(ctx *gin.Context, u models.Project) utils.Result
 	Save(ctx *gin.Context, u models.Project) utils.Result
 	Updates(ctx *gin.Context, u models.Project) utils.Result
+	Delete(ctx *gin.Context, id string) utils.Result
 }

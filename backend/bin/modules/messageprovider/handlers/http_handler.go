@@ -22,4 +22,5 @@ func InitMessageProviderHTTPHandler(uq messageprovider.UsecaseQuery, uc messagep
 	s.Gin.GET("/message-provider/id/:id", handler.MessageProviderUsecaseQuery.GetByID)
 	s.Gin.POST("/message-provider/new", handler.MessageProviderUsecaseCommand.PostMessageProvider)
 	s.Gin.PUT("/message-provider/edit/:id", handler.MessageProviderUsecaseCommand.PostMessageProvider)
+	s.Gin.DELETE("/message-provider/id/:id", handler.MessageProviderUsecaseCommand.PostMessageProvider)
 }
