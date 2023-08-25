@@ -10,8 +10,9 @@ import (
 type UsecaseQuery interface {
 	GetByID(ctx *gin.Context)
 	GetAccess(ctx *gin.Context)
+	GetByProjectID(ctx *gin.Context)
+	GetBYMessageProviderID(ctx *gin.Context)
 	GetAll(ctx *gin.Context)
-	// GetByName(ctx *gin.Context)
 }
 
 type UsecaseCommand interface {
@@ -23,6 +24,8 @@ type UsecaseCommand interface {
 type RepositoryQuery interface {
 	FindAll(ctx *gin.Context, skip, limit int) utils.Result
 	FindOneByID(ctx *gin.Context, id string) utils.Result
+	FindOneByProjectID(ctx *gin.Context, id string) utils.Result
+	FindOneByMessageProviderID(ctx *gin.Context, id string) utils.Result
 	CountData(ctx *gin.Context) utils.Result
 }
 

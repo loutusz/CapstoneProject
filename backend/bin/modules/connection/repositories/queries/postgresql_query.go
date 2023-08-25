@@ -50,6 +50,35 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 	return output
 
 }
+
+func (q QueryRepository) FindOneByProjectID(ctx *gin.Context, id string) utils.Result {
+	var connectionModel models.Connection
+
+	// Use ORM to find a connection record by ID
+	r := q.ORM.DB.First(&connectionModel, "project_id = ?", id)
+	// Prepare the result, including retrieved connection data and database operation result
+	output := utils.Result{
+		Data: connectionModel,
+		DB:   r,
+	}
+	return output
+
+}
+
+func (q QueryRepository) FindOneByMessageProviderID(ctx *gin.Context, id string) utils.Result {
+	var connectionModel models.Connection
+
+	// Use ORM to find a connection record by ID
+	r := q.ORM.DB.First(&connectionModel, "message_provider_id = ?", id)
+	// Prepare the result, including retrieved connection data and database operation result
+	output := utils.Result{
+		Data: connectionModel,
+		DB:   r,
+	}
+	return output
+
+}
+
 func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
 	var connectionModel models.Connection
 	var count int64
