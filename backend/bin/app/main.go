@@ -104,7 +104,7 @@ func setMessageProviderHTTP(orm *databases.ORM, srv *servers.GinServer) {
 
 	// Create a messageprovider command repository and use case for writing messageprovider data
 	messageproviderCommandRepository := messageproviderRepositoryCommands.NewCommandRepository(orm)
-	messageproviderCommandUsecase := messageproviderUsecases.NewCommandUsecase(messageproviderCommandRepository, orm)
+	messageproviderCommandUsecase := messageproviderUsecases.NewCommandUsecase(messageproviderCommandRepository, messageproviderQueryRepository, orm)
 
 	// Initialize messageprovider HTTP handlers with query and command use cases, and link them with the Gin server
 	messageproviderHandler.InitMessageProviderHTTPHandler(messageproviderQueryUsecase, messageproviderCommandUsecase, srv)
