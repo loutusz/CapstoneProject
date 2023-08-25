@@ -179,5 +179,4 @@ func (q QueryUsecase) GetAll(ctx *gin.Context) {
 		Status:    true,
 	}
 	ctx.JSON(http.StatusOK, result)
-	return
 }

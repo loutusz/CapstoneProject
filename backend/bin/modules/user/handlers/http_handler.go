@@ -25,4 +25,5 @@ func InitUserHTTPHandler(uq user.UsecaseQuery, uc user.UsecaseCommand, s *server
 	s.Gin.GET("/user/username/:username", handler.UserUsecaseQuery.GetByUsername)
 	s.Gin.POST("/user/SignIn", handler.UserUsecaseCommand.PostLogin)
 	s.Gin.GET("/user/all", handler.UserUsecaseQuery.GetAll)
+	s.Gin.DELETE("/user/id/:id", handler.UserUsecaseCommand.DeleteUser)
 }

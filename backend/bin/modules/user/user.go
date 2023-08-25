@@ -17,6 +17,7 @@ type UsecaseQuery interface {
 type UsecaseCommand interface {
 	PostRegister(ctx *gin.Context)
 	PostLogin(ctx *gin.Context)
+	DeleteUser(ctx *gin.Context)
 }
 
 type RepositoryQuery interface {
@@ -30,4 +31,5 @@ type RepositoryCommand interface {
 	Create(ctx *gin.Context, u models.User) utils.Result
 	Save(ctx *gin.Context, u models.User) utils.Result
 	FindPassword(ctx *gin.Context, u string) utils.FindPasswordResult
+	Delete(ctx *gin.Context, id string) utils.Result
 }
