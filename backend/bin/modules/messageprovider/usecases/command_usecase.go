@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"login-api-jwt/bin/modules/messageprovider"
 	"login-api-jwt/bin/modules/messageprovider/models"
 	"login-api-jwt/bin/pkg/databases"
@@ -12,21 +11,18 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 // CommandUsecase implements messageprovider.UsecaseCommand interface
 type CommandUsecase struct {
 	MessageProviderRepositoryCommand messageprovider.RepositoryCommand
-	MessageProviderRepositoryQuery   messageprovider.RepositoryQuery
 	ORM                              *databases.ORM
 }
 
 // NewCommandUsecase creates a new instance of CommandUsecase
-func NewCommandUsecase(q messageprovider.RepositoryCommand, query messageprovider.RepositoryQuery, orm *databases.ORM) messageprovider.UsecaseCommand {
+func NewCommandUsecase(q messageprovider.RepositoryCommand, orm *databases.ORM) messageprovider.UsecaseCommand {
 	return &CommandUsecase{
 		MessageProviderRepositoryCommand: q,
-		MessageProviderRepositoryQuery:   query,
 		ORM:                              orm,
 	}
 }
@@ -151,11 +147,12 @@ func (q CommandUsecase) DeleteMessageProvider(ctx *gin.Context) {
 	var result utils.ResultResponse = utils.ResultResponse{
 		Code:    http.StatusBadRequest,
 		Data:    nil,
-		Message: "Failed Delete Message Provider",
+		Message: "Failed Delete MessageProvider",
 		Status:  false,
 	}
 
 	var id string = ctx.Param("id")
+
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
@@ -172,28 +169,30 @@ func (q CommandUsecase) DeleteMessageProvider(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	isExistData := q.MessageProviderRepositoryQuery.FindOneByID(ctx, id)
-	if isExistData.DB.Error != nil {
-		if errors.Is(isExistData.DB.Error, gorm.ErrRecordNotFound) {
-			ctx.AbortWithStatusJSON(result.Code, result)
-			return
-		}
-		result.Code = http.StatusInternalServerError
-		ctx.AbortWithStatusJSON(result.Code, result)
-		return
-	}
-
 	deletedMessageProvider := q.MessageProviderRepositoryCommand.Delete(ctx, id)
-	if deletedMessageProvider.DB.Error != nil {
+	if deletedMessageProvider.DB[0].Error != nil {
 		result.Code = http.StatusInternalServerError
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
+	if deletedMessageProvider.DB[1].Error != nil {
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	if deletedMessageProvider.DB[1].RowsAffected == 0 {
+		// If there was an error, return Internal Server Error with error message
+		result.Code = http.StatusBadRequest
+		result.Message = "messageProvider not found"
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
 	result = utils.ResultResponse{
 		Code:    http.StatusOK,
-		Data:    isExistData.Data,
-		Message: "Success Delete Message Provider",
+		Data:    deletedMessageProvider.Data,
+		Message: "Success Delete MessageProvider",
 		Status:  true,
 	}
 	ctx.JSON(result.Code, result)

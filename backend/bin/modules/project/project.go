@@ -31,5 +31,5 @@ type RepositoryCommand interface {
 	Create(ctx *gin.Context, u models.Project) utils.Result
 	Save(ctx *gin.Context, u models.Project) utils.Result
 	Updates(ctx *gin.Context, u models.Project) utils.Result
-	Delete(ctx *gin.Context, id string) utils.Result
+	Delete(ctx *gin.Context, id string) utils.MultiDataResult
 }
