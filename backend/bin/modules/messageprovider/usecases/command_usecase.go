@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -32,18 +33,40 @@ func NewCommandUsecase(q messageprovider.RepositoryCommand, query messageprovide
 
 // PostRegister handles messageprovider registration
 func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
-	var messageproviderModel models.MessageProvider
-	err := ctx.ShouldBind(&messageproviderModel)
+	var messageProviderModel models.MessageProvider
+	err := ctx.ShouldBind(&messageProviderModel)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 	}
 
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		return
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+	token, err := utils.ValidateUserJWTToToken(tokenString)
+
+	if err != nil {
+		if err.Error() == "invalid token" {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+	}
+	messageProviderModel.User_id = claims["id"].(string)
+
 	// Generate a unique ID for messageprovider
-	messageproviderModel.ID = uuid.NewString()
+	messageProviderModel.ID = uuid.NewString()
 
 	// Create messageprovider record in the database
 
-	r := q.MessageProviderRepositoryCommand.Create(ctx, messageproviderModel)
+	r := q.MessageProviderRepositoryCommand.Create(ctx, messageProviderModel)
 	if r.DB.Error != nil {
 		if strings.Contains(r.DB.Error.Error(), "insert or update on table \"message_providers\" violates foreign key constraint \"message_providers_messageProvider_id_fkey\"") {
 			// If data is already found, abort with status "email or messageProvidername already used"
@@ -56,10 +79,10 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 	}
 
 	// Response data for successful registration
-	messageproviderRegisterResponse := messageproviderModel
+	messageproviderRegisterResponse := messageProviderModel
 
 	// Save messageprovider record again after successful registration
-	r = q.MessageProviderRepositoryCommand.Save(ctx, messageproviderModel)
+	r = q.MessageProviderRepositoryCommand.Save(ctx, messageProviderModel)
 
 	// Check if an error occurred while saving
 	if r.DB.Error != nil {
@@ -81,6 +104,28 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 	}
 
 	messageProviderModel.ID = messageProviderID
+
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		return
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+	token, err := utils.ValidateUserJWTToToken(tokenString)
+
+	if err != nil {
+		if err.Error() == "invalid token" {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+	}
+	messageProviderModel.User_id = claims["id"].(string)
 
 	// Response data for successful registration
 	Response := messageProviderModel
@@ -111,6 +156,21 @@ func (q CommandUsecase) DeleteMessageProvider(ctx *gin.Context) {
 	}
 
 	var id string = ctx.Param("id")
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		return
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+	_, err := utils.ValidateUserJWTToToken(tokenString)
+
+	if err != nil {
+		if err.Error() == "invalid token" {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+	}
 
 	isExistData := q.MessageProviderRepositoryQuery.FindOneByID(ctx, id)
 	if isExistData.DB.Error != nil {

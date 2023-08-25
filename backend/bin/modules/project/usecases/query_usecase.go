@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"reflect"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -133,6 +134,22 @@ func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var totalCount, page, limit int
 	var err error
+
+	authHeader := ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		return
+	}
+
+	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
+	_, err = utils.ValidateUserJWTToToken(tokenString)
+
+	if err != nil {
+		if err.Error() == "invalid token" {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		ctx.AbortWithError(http.StatusInternalServerError, err)
+	}
 
 	page, err = strconv.Atoi(ctx.Query("page"))
 	// handling when error set default page value 1
