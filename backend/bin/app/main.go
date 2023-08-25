@@ -117,7 +117,7 @@ func setConnectionHTTP(orm *databases.ORM, srv *servers.GinServer) {
 
 	// Create a connection command repository and use case for writing connection data
 	connectionCommandRepository := connectionRepositoryCommands.NewCommandRepository(orm)
-	connectionCommandUsecase := connectionUsecases.NewCommandUsecase(connectionCommandRepository, orm)
+	connectionCommandUsecase := connectionUsecases.NewCommandUsecase(connectionCommandRepository, connectionQueryRepository, orm)
 
 	// Initialize connection HTTP handlers with query and command use cases, and link them with the Gin server
 	connectionHandler.InitConnectionHTTPHandler(connectionQueryUsecase, connectionCommandUsecase, srv)

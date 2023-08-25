@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"errors"
 	"login-api-jwt/bin/modules/connection"
 	"login-api-jwt/bin/modules/connection/models"
 	"login-api-jwt/bin/pkg/databases"
@@ -10,18 +11,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // CommandUsecase implements connection.UsecaseCommand interface
 type CommandUsecase struct {
 	ConnectionRepositoryCommand connection.RepositoryCommand
+	connectionRepositoryQuery   connection.RepositoryQuery
 	ORM                         *databases.ORM
 }
 
 // NewCommandUsecase creates a new instance of CommandUsecase
-func NewCommandUsecase(q connection.RepositoryCommand, orm *databases.ORM) connection.UsecaseCommand {
+func NewCommandUsecase(q connection.RepositoryCommand, query connection.RepositoryQuery, orm *databases.ORM) connection.UsecaseCommand {
 	return &CommandUsecase{
 		ConnectionRepositoryCommand: q,
+		connectionRepositoryQuery:   query,
 		ORM:                         orm,
 	}
 }
@@ -114,4 +118,41 @@ func (q CommandUsecase) PutConnection(ctx *gin.Context) {
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data
 	ctx.JSON(http.StatusOK, Response)
 
+}
+
+func (q CommandUsecase) DeleteConnection(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Delete Connection",
+		Status:  false,
+	}
+
+	var id string = ctx.Param("id")
+
+	isExistData := q.connectionRepositoryQuery.FindOneByID(ctx, id)
+	if isExistData.DB.Error != nil {
+		if errors.Is(isExistData.DB.Error, gorm.ErrRecordNotFound) {
+			ctx.AbortWithStatusJSON(result.Code, result)
+			return
+		}
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	deletedConnection := q.ConnectionRepositoryCommand.Delete(ctx, id)
+	if deletedConnection.DB.Error != nil {
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    isExistData.Data,
+		Message: "Success Delete Connection",
+		Status:  true,
+	}
+	ctx.JSON(result.Code, result)
 }

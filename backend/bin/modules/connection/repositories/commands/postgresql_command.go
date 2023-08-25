@@ -55,3 +55,14 @@ func (c *CommandRepository) Updates(ctx *gin.Context, p models.Connection) utils
 	}
 	return output
 }
+
+func (c *CommandRepository) Delete(ctx *gin.Context, id string) utils.Result {
+	var connectionModel models.Connection
+	recordset := c.ORM.DB.Delete(&connectionModel, "id = ?", id)
+
+	output := utils.Result{
+		Data: connectionModel,
+		DB:   recordset,
+	}
+	return output
+}
