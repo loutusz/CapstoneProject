@@ -124,19 +124,149 @@ func (q QueryUsecase) GetAll(ctx *gin.Context) {
 	return
 }
 
+func (q QueryUsecase) GetByProjectID(ctx *gin.Context) {
+	var totalCount, page, limit int
+	var err error
+
+	page, err = strconv.Atoi(ctx.Query("page"))
+	// handling when error set default page value 1
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	// handling when error set default limit value 10
+	limit, err = strconv.Atoi(ctx.Query("limit"))
+	if err != nil || limit == 0 {
+		limit = 10
+	}
+
+	// count data connection
+	var count = q.ConnectionRepositoryQuery.CountData(ctx)
+
+	// parsing result count data to Integer
+	if reflect.ValueOf(count.Data).CanInt() {
+		totalCount = int(reflect.ValueOf(count.Data).Int())
+	}
+
+	// calculate total page
+	var totalPage int = int(math.Ceil(float64(totalCount) / float64(limit)))
+	// handling if max total page
+	if page > totalPage {
+		page = totalPage
+	}
+
+	// set skip for offset data
+	var skip = limit * (page - 1)
+	var result utils.ResultResponsePagination = utils.ResultResponsePagination{
+		Code:      http.StatusBadRequest,
+		Data:      nil,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Failed Get Data Connection",
+		Status:    false,
+	}
+
+	if totalCount == 0 {
+		result.Code = http.StatusNotFound
+		result.Message = "Data Not Found"
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	getConnectionData := q.ConnectionRepositoryQuery.FindAll(ctx, skip, limit)
+	if getConnectionData.DB.Error != nil {
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	result = utils.ResultResponsePagination{
+		Code:      http.StatusOK,
+		Data:      getConnectionData.Data,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Success Get Data Connection",
+		Status:    true,
+	}
+	ctx.JSON(http.StatusOK, result)
+	return
+}
+
+func (q QueryUsecase) GetBYMessageProviderID(ctx *gin.Context) {
+	var totalCount, page, limit int
+	var err error
+
+	page, err = strconv.Atoi(ctx.Query("page"))
+	// handling when error set default page value 1
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	// handling when error set default limit value 10
+	limit, err = strconv.Atoi(ctx.Query("limit"))
+	if err != nil || limit == 0 {
+		limit = 10
+	}
+
+	// count data connection
+	var count = q.ConnectionRepositoryQuery.CountData(ctx)
+
+	// parsing result count data to Integer
+	if reflect.ValueOf(count.Data).CanInt() {
+		totalCount = int(reflect.ValueOf(count.Data).Int())
+	}
+
+	// calculate total page
+	var totalPage int = int(math.Ceil(float64(totalCount) / float64(limit)))
+	// handling if max total page
+	if page > totalPage {
+		page = totalPage
+	}
+
+	// set skip for offset data
+	var skip = limit * (page - 1)
+	var result utils.ResultResponsePagination = utils.ResultResponsePagination{
+		Code:      http.StatusBadRequest,
+		Data:      nil,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Failed Get Data Connection",
+		Status:    false,
+	}
+
+	if totalCount == 0 {
+		result.Code = http.StatusNotFound
+		result.Message = "Data Not Found"
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	getConnectionData := q.ConnectionRepositoryQuery.FindAll(ctx, skip, limit)
+	if getConnectionData.DB.Error != nil {
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	result = utils.ResultResponsePagination{
+		Code:      http.StatusOK,
+		Data:      getConnectionData.Data,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Success Get Data Connection",
+		Status:    true,
+	}
+	ctx.JSON(http.StatusOK, result)
+	return
+}
+
 // GetAccess responds with a success message indicating connection access
 func (q QueryUsecase) GetAccess(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "connection access success"})
 }
-
-// // GetByName retrieves connection data by name and responds with the result
-// func (q QueryUsecase) GetByName(ctx *gin.Context) {
-// 	name := ctx.Param("name")
-// 	fmt.Printf("name access %s", name)
-
-// 	// Call FindOneByName method to retrieve connection data by name
-// 	ret := q.ConnectionRepositoryQuery.FindOneByName(ctx, name)
-
-// 	// Respond with retrieved connection data in JSON format
-// 	ctx.JSON(http.StatusOK, ret.Data)
-// }
