@@ -12,6 +12,12 @@ type Result struct {
 	Error error
 }
 
+type MultiDataResult struct {
+	Data  interface{}
+	DB    []*gorm.DB
+	Error error
+}
+
 type FindPasswordResult struct {
 	Data     models.User
 	Password string
