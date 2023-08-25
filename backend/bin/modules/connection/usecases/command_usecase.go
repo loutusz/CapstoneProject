@@ -1,7 +1,6 @@
 package usecases
 
 import (
-	"errors"
 	"login-api-jwt/bin/modules/connection"
 	"login-api-jwt/bin/modules/connection/models"
 	"login-api-jwt/bin/pkg/databases"
@@ -11,13 +10,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 // CommandUsecase implements connection.UsecaseCommand interface
 type CommandUsecase struct {
 	ConnectionRepositoryCommand connection.RepositoryCommand
-	connectionRepositoryQuery   connection.RepositoryQuery
 	ORM                         *databases.ORM
 }
 
@@ -25,7 +22,6 @@ type CommandUsecase struct {
 func NewCommandUsecase(q connection.RepositoryCommand, query connection.RepositoryQuery, orm *databases.ORM) connection.UsecaseCommand {
 	return &CommandUsecase{
 		ConnectionRepositoryCommand: q,
-		connectionRepositoryQuery:   query,
 		ORM:                         orm,
 	}
 }
@@ -130,17 +126,6 @@ func (q CommandUsecase) DeleteConnection(ctx *gin.Context) {
 
 	var id string = ctx.Param("id")
 
-	isExistData := q.connectionRepositoryQuery.FindOneByID(ctx, id)
-	if isExistData.DB.Error != nil {
-		if errors.Is(isExistData.DB.Error, gorm.ErrRecordNotFound) {
-			ctx.AbortWithStatusJSON(result.Code, result)
-			return
-		}
-		result.Code = http.StatusInternalServerError
-		ctx.AbortWithStatusJSON(result.Code, result)
-		return
-	}
-
 	deletedConnection := q.ConnectionRepositoryCommand.Delete(ctx, id)
 	if deletedConnection.DB.Error != nil {
 		result.Code = http.StatusInternalServerError
@@ -148,9 +133,17 @@ func (q CommandUsecase) DeleteConnection(ctx *gin.Context) {
 		return
 	}
 
+	if deletedConnection.DB.RowsAffected == 0 {
+		// If there was an error, return Internal Server Error with error message
+		result.Code = http.StatusBadRequest
+		result.Message = "project not found"
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
 	result = utils.ResultResponse{
 		Code:    http.StatusOK,
-		Data:    isExistData.Data,
+		Data:    deletedConnection.Data,
 		Message: "Success Delete Connection",
 		Status:  true,
 	}

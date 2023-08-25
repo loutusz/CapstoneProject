@@ -21,16 +21,14 @@ import (
 // CommandUsecase implements user.UsecaseCommand interface
 type CommandUsecase struct {
 	UserRepositoryCommand user.RepositoryCommand
-	UserRepositoryQuery   user.RepositoryQuery
 	ORM                   *databases.ORM
 }
 
 // NewCommandUsecase creates a new instance of CommandUsecase
-func NewCommandUsecase(q user.RepositoryCommand, query user.RepositoryQuery, orm *databases.ORM) user.UsecaseCommand {
+func NewCommandUsecase(q user.RepositoryCommand, orm *databases.ORM) user.UsecaseCommand {
 	return &CommandUsecase{
 		UserRepositoryCommand: q,
 		ORM:                   orm,
-		UserRepositoryQuery:   query,
 	}
 }
 
@@ -218,28 +216,25 @@ func (q CommandUsecase) DeleteUser(ctx *gin.Context) {
 	}
 
 	var id string = ctx.Param("id")
-	isExistData := q.UserRepositoryQuery.FindOneByID(ctx, id)
-	if isExistData.DB.Error != nil {
-		if errors.Is(isExistData.DB.Error, gorm.ErrRecordNotFound) {
-			ctx.AbortWithStatusJSON(result.Code, result)
-			return
-		}
 
+	deletedUser := q.UserRepositoryCommand.Delete(ctx, id)
+	if deletedUser.Error != nil {
 		result.Code = http.StatusInternalServerError
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
-	deleteUser := q.UserRepositoryCommand.Delete(ctx, id)
-	if deleteUser.Error != nil {
-		result.Code = http.StatusInternalServerError
+	if deletedUser.DB.RowsAffected == 0 {
+		// If there was an error, return Internal Server Error with error message
+		result.Code = http.StatusBadRequest
+		result.Message = "project not found"
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
 	result = utils.ResultResponse{
 		Code:    http.StatusOK,
-		Data:    isExistData.Data,
+		Data:    deletedUser.Data,
 		Message: "Success Delete User",
 		Status:  true,
 	}
