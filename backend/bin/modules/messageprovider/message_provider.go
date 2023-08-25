@@ -11,7 +11,7 @@ type UsecaseQuery interface {
 	GetByID(ctx *gin.Context)
 	GetAccess(ctx *gin.Context)
 	GetAll(ctx *gin.Context)
-	// GetByName(ctx *gin.Context)
+	GetUserOwned(ctx *gin.Context)
 }
 
 type UsecaseCommand interface {
@@ -21,9 +21,10 @@ type UsecaseCommand interface {
 }
 
 type RepositoryQuery interface {
-	FindAll(ctx *gin.Context) utils.Result
+	FindAll(ctx *gin.Context, skip, limit int) utils.Result
 	FindOneByID(ctx *gin.Context, id string) utils.Result
-	// FindOneByName(ctx *gin.Context, name string) utils.Result
+	FindByUserID(ctx *gin.Context, id string, skip, limit int) utils.Result
+	CountData(ctx *gin.Context) utils.Result
 }
 
 type RepositoryCommand interface {

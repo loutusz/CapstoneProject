@@ -12,7 +12,6 @@ type UsecaseQuery interface {
 	GetAccess(ctx *gin.Context)
 	GetAll(ctx *gin.Context)
 	GetUserOwned(ctx *gin.Context)
-	// GetByName(ctx *gin.Context)
 }
 
 type UsecaseCommand interface {

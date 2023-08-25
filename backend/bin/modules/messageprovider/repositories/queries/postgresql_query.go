@@ -23,11 +23,11 @@ func NewQueryRepository(orm *databases.ORM) messageprovider.RepositoryQuery {
 
 // FindOneByID retrieves a messageprovider record from database by ID
 
-func (q QueryRepository) FindAll(ctx *gin.Context) utils.Result {
+func (q QueryRepository) FindAll(ctx *gin.Context, skip, limit int) utils.Result {
 	var messageprovidersModel []models.MessageProvider
 
 	// Use ORM to find a messageprovider record by ID
-	r := q.ORM.DB.Find(&messageprovidersModel)
+	r := q.ORM.DB.Offset(skip).Limit(limit).Find(&messageprovidersModel)
 
 	// Prepare the result, including retrieved messageprovider data and database operation result
 	output := utils.Result{
@@ -37,6 +37,7 @@ func (q QueryRepository) FindAll(ctx *gin.Context) utils.Result {
 	return output
 
 }
+
 func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 	var messageproviderModel models.MessageProvider
 
@@ -50,18 +51,29 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 	return output
 
 }
+func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
+	var messageproviderModel models.MessageProvider
+	var count int64
+	r := q.ORM.DB.Find(&messageproviderModel).Count(&count)
 
-// // FindOneByName retrieves a messageprovider record from database by name
-// func (q QueryRepository) FindOneByName(ctx *gin.Context, name string) utils.Result {
-// 	var messageproviderModel models.MessageProvider
+	output := utils.Result{
+		Data: count,
+		DB:   r,
+	}
+	return output
+}
 
-// 	// Use ORM to find a messageprovider record by name
-// 	r := q.ORM.DB.First(&messageproviderModel, "name = ?", name)
-// 	// Prepare the result, including retrieved messageprovider data and database operation result
-// 	output := utils.Result{
-// 		Data: messageproviderModel,
-// 		DB:   r,
-// 	}
-// 	return output
+func (q QueryRepository) FindByUserID(ctx *gin.Context, id string, skip, limit int) utils.Result {
+	var messageprovidersModel []models.MessageProvider
 
-// }
+	// Use ORM to find a messageprovider record by ID
+	r := q.ORM.DB.Where("user_id = ?", id).Offset(skip).Limit(limit).Find(&messageprovidersModel)
+
+	// Prepare the result, including retrieved messageprovider data and database operation result
+	output := utils.Result{
+		Data: messageprovidersModel,
+		DB:   r,
+	}
+	return output
+
+}
