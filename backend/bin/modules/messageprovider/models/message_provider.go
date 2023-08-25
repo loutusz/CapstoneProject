@@ -2,25 +2,25 @@ package models
 
 type MessageProvider struct {
 	ID             string `json:"id"`
-	Project_id     string `json:"project_id" form:"project_id"`
+	User_id        string `json:"user_id" form:"user_id"`
 	Provider_type  string `json:"provider_type" form:"provider_type"`
 	Provider_label string `json:"provider_label" form:"provider_label"`
-	Channel        string `json:"channel" form:"channel"`
+	Webhook        string `json:"webhook" form:"webhook"`
 }
 
 type UpsertMessageProvider struct {
-	Project_id     string `json:"project_id" form:"project_id"`
+	User_id        string `json:"user_id" form:"user_id"`
 	Provider_type  string `json:"provider_type" form:"provider_type"`
 	Provider_label string `json:"provider_label" form:"provider_label"`
-	Channel        string `json:"channel" form:"channel"`
+	Webhook        string `json:"webhook" form:"webhook"`
 }
 
 func (p MessageProvider) UpsertMessageProvider() UpsertMessageProvider {
 	return UpsertMessageProvider{
-		Project_id:     p.Project_id,
+		User_id:        p.User_id,
 		Provider_type:  p.Provider_type,
 		Provider_label: p.Provider_label,
-		Channel:        p.Channel,
+		Webhook:        p.Webhook,
 	}
 }
 
@@ -30,16 +30,16 @@ type GetMessageProviderRequest struct {
 
 type GetMessageProviderResponse struct {
 	ID             string `json:"id"`
-	Project_id     string `json:"project_id" form:"project_id"`
+	User_id        string `json:"user_id" form:"user_id"`
 	Provider_type  string `json:"provider_type" form:"provider_type"`
 	Provider_label string `json:"provider_label" form:"provider_label"`
-	Channel        string `json:"channel" form:"channel"`
+	Webhook        string `json:"webhook" form:"webhook"`
 }
 
 type PostMessageProviderResponse struct {
 	ID             string `json:"id"`
-	Project_id     string `json:"project_id"`
+	User_id        string `json:"user_id"`
 	Provider_type  string `json:"provider_type"`
 	Provider_label string `json:"provider_label"`
-	Channel        string `json:"channel"`
+	Webhook        string `json:"webhook"`
 }
