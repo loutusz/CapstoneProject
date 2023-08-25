@@ -78,7 +78,7 @@ func setUserHTTP(orm *databases.ORM, srv *servers.GinServer) {
 
 	// Create a user command repository and use case for writing user data
 	userCommandRepository := userRepositoryCommands.NewCommandRepository(orm)
-	userCommandUsecase := userUsecases.NewCommandUsecase(userCommandRepository, userQueryRepository, orm)
+	userCommandUsecase := userUsecases.NewCommandUsecase(userCommandRepository, orm)
 
 	// Initialize user HTTP handlers with query and command use cases, and link them with the Gin server
 	userHandler.InitUserHTTPHandler(userQueryUsecase, userCommandUsecase, srv)

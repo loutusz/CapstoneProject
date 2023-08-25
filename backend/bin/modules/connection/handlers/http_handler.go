@@ -26,5 +26,5 @@ func InitConnectionHTTPHandler(uq connection.UsecaseQuery, uc connection.Usecase
 	s.Gin.GET("/connection/message-provider/:id", handler.ConnectionUsecaseQuery.GetBYMessageProviderID)
 	s.Gin.POST("/connection/new", handler.ConnectionUsecaseCommand.PostConnection)
 	s.Gin.PUT("/connection/edit/:id", handler.ConnectionUsecaseCommand.PutConnection)
-	s.Gin.DELETE("/connection/id/:id", handler.ConnectionUsecaseCommand.PutConnection)
+	s.Gin.DELETE("/connection/id/:id", handler.ConnectionUsecaseCommand.DeleteConnection)
 }
