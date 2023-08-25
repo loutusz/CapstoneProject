@@ -31,6 +31,6 @@ type RepositoryCommand interface {
 	Create(ctx *gin.Context, u models.MessageProvider) utils.Result
 	Save(ctx *gin.Context, u models.MessageProvider) utils.Result
 	Updates(ctx *gin.Context, u models.MessageProvider) utils.Result
-	Delete(ctx *gin.Context, id string) utils.Result
+	Delete(ctx *gin.Context, id string) utils.MultiDataResult
 	// FindPassword(ctx *gin.Context, u string) utils.FindPasswordResult
 }

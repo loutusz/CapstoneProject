@@ -1,12 +1,14 @@
 package queries
 
 import (
+	connectionModels "login-api-jwt/bin/modules/connection/models"
 	"login-api-jwt/bin/modules/messageprovider"
 	"login-api-jwt/bin/modules/messageprovider/models"
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // CommandRepository implements messageprovider.RepositoryCommand interface
@@ -56,13 +58,27 @@ func (c *CommandRepository) Updates(ctx *gin.Context, m models.MessageProvider) 
 	return output
 }
 
-func (c *CommandRepository) Delete(ctx *gin.Context, id string) utils.Result {
+func (c *CommandRepository) Delete(ctx *gin.Context, id string) utils.MultiDataResult {
 	var messageProviderModel models.MessageProvider
-	recordset := c.ORM.DB.Delete(&messageProviderModel, "id = ?", id)
+	var connectionModel connectionModels.Connection
 
-	output := utils.Result{
-		Data: messageProviderModel,
-		DB:   recordset,
+	c.ORM.DB.First(&connectionModel, "message_provider_id = ?", id)
+	c.ORM.DB.First(&messageProviderModel, "id = ?", id)
+
+	connectionRecordset := c.ORM.DB.Delete(&connectionModel, "message_provider_id = ?", id)
+	messageProviderRecordset := c.ORM.DB.Delete(&messageProviderModel, "id = ?", id)
+
+	result := struct {
+		MessageProvider models.MessageProvider
+		Connection      connectionModels.Connection
+	}{
+		MessageProvider: messageProviderModel,
+		Connection:      connectionModel,
+	}
+
+	output := utils.MultiDataResult{
+		Data: result,
+		DB:   []*gorm.DB{connectionRecordset, messageProviderRecordset},
 	}
 	return output
 }
