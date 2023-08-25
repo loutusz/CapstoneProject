@@ -17,6 +17,11 @@ import (
 	messageproviderRepositoryQueries "login-api-jwt/bin/modules/messageprovider/repositories/queries"
 	messageproviderUsecases "login-api-jwt/bin/modules/messageprovider/usecases"
 
+	connectionHandler "login-api-jwt/bin/modules/connection/handlers"
+	connectionRepositoryCommands "login-api-jwt/bin/modules/connection/repositories/commands"
+	connectionRepositoryQueries "login-api-jwt/bin/modules/connection/repositories/queries"
+	connectionUsecases "login-api-jwt/bin/modules/connection/usecases"
+
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/servers"
 	"os"
@@ -49,6 +54,7 @@ func main() {
 	setUserHTTP(orm, srv)
 	setProjectHTTP(orm, srv)
 	setMessageProviderHTTP(orm, srv)
+	setConnectionHTTP(orm, srv)
 
 	// Get port from environment variables, or use default port 8050
 	defaultPort := "8050"
@@ -102,4 +108,17 @@ func setMessageProviderHTTP(orm *databases.ORM, srv *servers.GinServer) {
 
 	// Initialize messageprovider HTTP handlers with query and command use cases, and link them with the Gin server
 	messageproviderHandler.InitMessageProviderHTTPHandler(messageproviderQueryUsecase, messageproviderCommandUsecase, srv)
+}
+
+func setConnectionHTTP(orm *databases.ORM, srv *servers.GinServer) {
+	// Create a user query repository and use case for reading connection data
+	connectionQueryRepository := connectionRepositoryQueries.NewQueryRepository(orm)
+	connectionQueryUsecase := connectionUsecases.NewQueryUsecase(connectionQueryRepository, orm)
+
+	// Create a connection command repository and use case for writing connection data
+	connectionCommandRepository := connectionRepositoryCommands.NewCommandRepository(orm)
+	connectionCommandUsecase := connectionUsecases.NewCommandUsecase(connectionCommandRepository, orm)
+
+	// Initialize connection HTTP handlers with query and command use cases, and link them with the Gin server
+	connectionHandler.InitConnectionHTTPHandler(connectionQueryUsecase, connectionCommandUsecase, srv)
 }
