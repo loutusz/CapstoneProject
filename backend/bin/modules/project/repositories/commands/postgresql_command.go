@@ -55,3 +55,14 @@ func (c *CommandRepository) Updates(ctx *gin.Context, p models.Project) utils.Re
 	}
 	return output
 }
+
+func (c *CommandRepository) Delete(ctx *gin.Context, id string) utils.Result {
+	var projectModel models.Project
+	recordset := c.ORM.DB.Delete(&projectModel, "id = ?", id)
+
+	output := utils.Result{
+		Data: projectModel,
+		DB:   recordset,
+	}
+	return output
+}

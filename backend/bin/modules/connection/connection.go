@@ -17,6 +17,7 @@ type UsecaseQuery interface {
 type UsecaseCommand interface {
 	PostConnection(ctx *gin.Context)
 	PutConnection(ctx *gin.Context)
+	DeleteConnection(ctx *gin.Context)
 }
 
 type RepositoryQuery interface {
@@ -29,4 +30,5 @@ type RepositoryCommand interface {
 	Create(ctx *gin.Context, u models.Connection) utils.Result
 	Save(ctx *gin.Context, u models.Connection) utils.Result
 	Updates(ctx *gin.Context, u models.Connection) utils.Result
+	Delete(ctx *gin.Context, id string) utils.Result
 }

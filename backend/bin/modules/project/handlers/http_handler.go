@@ -24,4 +24,5 @@ func InitProjectHTTPHandler(uq project.UsecaseQuery, uc project.UsecaseCommand, 
 	s.Gin.GET("/project/id/:id", handler.ProjectUsecaseQuery.GetByID)
 	s.Gin.POST("/project/new", handler.ProjectUsecaseCommand.PostProject)
 	s.Gin.PUT("/project/edit/:id", handler.ProjectUsecaseCommand.PutProject)
+	s.Gin.DELETE("/project/id/:id", handler.ProjectUsecaseCommand.DeleteProject)
 }
