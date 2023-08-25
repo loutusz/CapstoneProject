@@ -91,7 +91,7 @@ func setProjectHTTP(orm *databases.ORM, srv *servers.GinServer) {
 
 	// Create a project command repository and use case for writing project data
 	projectCommandRepository := projectRepositoryCommands.NewCommandRepository(orm)
-	projectCommandUsecase := projectUsecases.NewCommandUsecase(projectCommandRepository, orm)
+	projectCommandUsecase := projectUsecases.NewCommandUsecase(projectCommandRepository, projectQueryRepository, orm)
 
 	// Initialize project HTTP handlers with query and command use cases, and link them with the Gin server
 	projectHandler.InitProjectHTTPHandler(projectQueryUsecase, projectCommandUsecase, srv)
