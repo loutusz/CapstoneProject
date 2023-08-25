@@ -19,9 +19,10 @@ func InitProjectHTTPHandler(uq project.UsecaseQuery, uc project.UsecaseCommand, 
 
 	// Define and register various routes and their corresponding handlers
 	// These routes are associated with different project-related operations
-	s.Gin.GET("/project/", handler.ProjectUsecaseQuery.GetAccess)
+	s.Gin.GET("/project", handler.ProjectUsecaseQuery.GetAccess)
 	s.Gin.GET("/project/all", handler.ProjectUsecaseQuery.GetAll)
 	s.Gin.GET("/project/id/:id", handler.ProjectUsecaseQuery.GetByID)
+	s.Gin.GET("/project/user/:id", handler.ProjectUsecaseQuery.GetUserOwned)
 	s.Gin.POST("/project/new", handler.ProjectUsecaseCommand.PostProject)
 	s.Gin.PUT("/project/edit/:id", handler.ProjectUsecaseCommand.PutProject)
 	s.Gin.DELETE("/project/id/:id", handler.ProjectUsecaseCommand.DeleteProject)

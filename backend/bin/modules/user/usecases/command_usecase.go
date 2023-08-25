@@ -7,13 +7,11 @@ import (
 	"login-api-jwt/bin/modules/user/models"
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/utils"
+
 	"login-api-jwt/bin/pkg/utils/validators"
 	"net/http"
-	"os"
 	"strings"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -183,20 +181,7 @@ func (q CommandUsecase) PostLogin(ctx *gin.Context) {
 	}
 
 	// Create a new JWT token for user
-	token := jwt.New(jwt.SigningMethodHS256) // create new jwt token
-
-	// Initialize claims variable as a map to hold JWT claims
-	claims := token.Claims.(jwt.MapClaims)
-
-	// Set claims in JWT token payload
-	claims["id"] = r.Data.ID
-	claims["username"] = r.Data.Username
-	claims["name"] = r.Data.Name
-	claims["email"] = r.Data.Email
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-
-	// Sign token with JWT secret key
-	t, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
+	t, err := utils.GenerateUserJWT(r.Data) // create new jwt token
 	if err != nil {
 		// fmt.Println("found jwt error")
 		result.Code = http.StatusInternalServerError
