@@ -10,6 +10,7 @@ import (
 	"login-api-jwt/bin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // QueryRepository implements project.RepositoryQuery interface
@@ -63,24 +64,47 @@ func (q QueryRepository) FindConnectedOneByID(ctx *gin.Context, id string) utils
 
 	// Use ORM to find a project record by ID
 	r := q.ORM.DB.First(&projectModel, "id = ?", id)
+	connector := struct {
+		Data    interface{}
+		Message string
+	}{
+		Message: "found",
+		Data:    &connectionModel,
+	}
 
-	// Use ORM to find a project record by ID
-	q.ORM.DB.First(&connectionModel, "project_id = ?", id)
-	q.ORM.DB.First(&providerModel, "id = ?", connectionModel.Message_provider_id)
+	provider := struct {
+		Data    interface{}
+		Message string
+	}{
+		Message: "found",
+		Data:    &providerModel,
+	}
+
+	if q.ORM.DB.First(&connectionModel, "project_id = ?", id).Error == gorm.ErrRecordNotFound {
+		connector.Message = "record not found"
+
+	}
+
+	// Use ORM to find a provider record by provider ID
+	if q.ORM.DB.First(&providerModel, "id = ?", connectionModel.Message_provider_id).Error == gorm.ErrRecordNotFound {
+		// Handle the case when provider data is not found
+		provider.Message = "record not found"
+	}
 
 	// Prepare the result
 	output := utils.Result{
 		Data: struct {
 			Project   models.Project
-			Connector connectionModels.Connection
-			Provider  messageProviderModels.MessageProvider
+			Connector interface{}
+			Provider  interface{}
 		}{
 			Project:   projectModel,
-			Connector: connectionModel,
-			Provider:  providerModel,
+			Connector: connector,
+			Provider:  provider,
 		},
 		DB: r,
 	}
+
 	return output
 }
 
