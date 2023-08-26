@@ -22,11 +22,11 @@ func NewQueryRepository(orm *databases.ORM) user.RepositoryQuery {
 }
 
 // FindOneByID retrieves a user record from database by ID
-func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
+func (q QueryRepository) FindOneByID(ctx *gin.Context, user_id string) utils.Result {
 	var userModel models.User
 
 	// Use ORM to find a user record by ID
-	r := q.ORM.DB.First(&userModel, "id = ?", id)
+	r := q.ORM.DB.First(&userModel, "user_id = ?", user_id)
 	// Prepare the result, including retrieved user data and database operation result
 	output := utils.Result{
 		Data: userModel,

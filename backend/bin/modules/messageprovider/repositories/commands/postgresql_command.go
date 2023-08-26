@@ -58,15 +58,15 @@ func (c *CommandRepository) Updates(ctx *gin.Context, m models.MessageProvider) 
 	return output
 }
 
-func (c *CommandRepository) Delete(ctx *gin.Context, id string) utils.MultiDataResult {
+func (c *CommandRepository) Delete(ctx *gin.Context, message_provider_id string) utils.MultiDataResult {
 	var messageProviderModel models.MessageProvider
 	var connectionModel connectionModels.Connection
 
-	c.ORM.DB.First(&connectionModel, "message_provider_id = ?", id)
-	c.ORM.DB.First(&messageProviderModel, "id = ?", id)
+	c.ORM.DB.First(&connectionModel, "connection_message_provider_id = ?", message_provider_id)
+	c.ORM.DB.First(&messageProviderModel, "message_provider_id = ?", message_provider_id)
 
-	connectionRecordset := c.ORM.DB.Delete(&connectionModel, "message_provider_id = ?", id)
-	messageProviderRecordset := c.ORM.DB.Delete(&messageProviderModel, "id = ?", id)
+	connectionRecordset := c.ORM.DB.Delete(&connectionModel, "connection_message_provider_id = ?", message_provider_id)
+	messageProviderRecordset := c.ORM.DB.Delete(&messageProviderModel, "message_provider_id = ?", message_provider_id)
 
 	result := struct {
 		MessageProvider models.MessageProvider

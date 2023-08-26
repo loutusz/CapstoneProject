@@ -41,8 +41,8 @@ func (q CommandUsecase) PostConnection(ctx *gin.Context) {
 		return
 	}
 
-	// Generate a unique ID for connection
-	connectionModel.ID = uuid.NewString()
+	// Generate a unique ConnectionID for connection
+	connectionModel.ConnectionID = uuid.NewString()
 
 	// Create connection record in the database
 	r := q.ConnectionRepositoryCommand.Create(ctx, connectionModel)
@@ -68,9 +68,9 @@ func (q CommandUsecase) PostConnection(ctx *gin.Context) {
 
 	// Response data for successful registration
 	connectionRegisterResponse := models.PostConnectionResponse{
-		ID:                  connectionModel.ID,
-		Message_provider_id: connectionModel.Message_provider_id,
-		Project_id:          connectionModel.Project_id,
+		ConnectionID:                connectionModel.ConnectionID,
+		ConnectionMessageProviderID: connectionModel.ConnectionMessageProviderID,
+		ConnectionProjectID:         connectionModel.ConnectionProjectID,
 	}
 
 	// Save connection record again after successful registration
@@ -94,7 +94,7 @@ func (q CommandUsecase) PutConnection(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 	}
 
-	connectionModel.ID = connectionID
+	connectionModel.ConnectionID = connectionID
 
 	// Response data for successful registration
 	Response := connectionModel
@@ -108,7 +108,7 @@ func (q CommandUsecase) PutConnection(ctx *gin.Context) {
 
 	if r.DB.RowsAffected == 0 {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Connection ID not available"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Connection ConnectionID not available"})
 		return
 	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data

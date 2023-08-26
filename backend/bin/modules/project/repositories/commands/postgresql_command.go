@@ -58,15 +58,15 @@ func (c *CommandRepository) Updates(ctx *gin.Context, p models.Project) utils.Re
 	return output
 }
 
-func (c *CommandRepository) Delete(ctx *gin.Context, id string) utils.MultiDataResult {
+func (c *CommandRepository) Delete(ctx *gin.Context, project_id string) utils.MultiDataResult {
 	var projectModel models.Project
 	var connectionModel connectionModels.Connection
 
-	c.ORM.DB.First(&connectionModel, "project_id = ?", id)
-	c.ORM.DB.First(&projectModel, "id = ?", id)
+	c.ORM.DB.First(&connectionModel, "connection_project_id = ?", project_id)
+	c.ORM.DB.First(&projectModel, "project_id = ?", project_id)
 
-	connectionRecordset := c.ORM.DB.Delete(&connectionModel, "project_id = ?", id)
-	projectRecordset := c.ORM.DB.Delete(&projectModel, "id = ?", id)
+	connectionRecordset := c.ORM.DB.Delete(&connectionModel, "connection_project_id = ?", project_id)
+	projectRecordset := c.ORM.DB.Delete(&projectModel, "project_id = ?", project_id)
 
 	result := struct {
 		Project    models.Project

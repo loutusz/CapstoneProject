@@ -42,11 +42,11 @@ func (q QueryRepository) FindAll(ctx *gin.Context, skip, limit int) utils.Result
 
 }
 
-func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
+func (q QueryRepository) FindOneByID(ctx *gin.Context, project_id string) utils.Result {
 	var projectModel models.Project
 
 	// Use ORM to find a project record by ID
-	r := q.ORM.DB.First(&projectModel, "id = ?", id)
+	r := q.ORM.DB.First(&projectModel, "project_id = ?", project_id)
 	// Prepare the result, including retrieved project data and database operation result
 	output := utils.Result{
 		Data: projectModel,
@@ -56,14 +56,14 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 
 }
 
-func (q QueryRepository) FindConnectedOneByID(ctx *gin.Context, id string) utils.Result {
+func (q QueryRepository) FindConnectedOneByID(ctx *gin.Context, project_id string) utils.Result {
 	var projectModel models.Project
 	// Define the structs for the connection and provider
 	var connectionModel connectionModels.Connection
 	var providerModel messageProviderModels.MessageProvider
 
 	// Use ORM to find a project record by ID
-	r := q.ORM.DB.First(&projectModel, "id = ?", id)
+	r := q.ORM.DB.First(&projectModel, "project_id = ?", project_id)
 	connector := struct {
 		Data    interface{}
 		Message string
@@ -80,13 +80,13 @@ func (q QueryRepository) FindConnectedOneByID(ctx *gin.Context, id string) utils
 		Data:    &providerModel,
 	}
 
-	if q.ORM.DB.First(&connectionModel, "project_id = ?", id).Error == gorm.ErrRecordNotFound {
+	if q.ORM.DB.First(&connectionModel, "connection_project_id = ?", project_id).Error == gorm.ErrRecordNotFound {
 		connector.Message = "record not found"
 
 	}
 
 	// Use ORM to find a provider record by provider ID
-	if q.ORM.DB.First(&providerModel, "id = ?", connectionModel.Message_provider_id).Error == gorm.ErrRecordNotFound {
+	if q.ORM.DB.First(&providerModel, "message_provider_id = ?", connectionModel.ConnectionMessageProviderID).Error == gorm.ErrRecordNotFound {
 		// Handle the case when provider data is not found
 		provider.Message = "record not found"
 	}
@@ -120,11 +120,11 @@ func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
 	return output
 }
 
-func (q QueryRepository) FindByUserID(ctx *gin.Context, id string, skip, limit int) utils.Result {
+func (q QueryRepository) FindByUserID(ctx *gin.Context, user_id string, skip, limit int) utils.Result {
 	var projectsModel []models.Project
 
 	// Use ORM to find a project record by ID
-	r := q.ORM.DB.Where("user_id = ?", id).Offset(skip).Limit(limit).Find(&projectsModel)
+	r := q.ORM.DB.Where("project_user_id = ?", user_id).Offset(skip).Limit(limit).Find(&projectsModel)
 
 	// Prepare the result, including retrieved project data and database operation result
 	output := utils.Result{
@@ -135,17 +135,30 @@ func (q QueryRepository) FindByUserID(ctx *gin.Context, id string, skip, limit i
 
 }
 
-func (q QueryRepository) FindConnectedByUserID(ctx *gin.Context, id string, skip, limit int) utils.Result {
-	var projectsModel []models.Project
+func (q QueryRepository) FindConnectedByUserID(ctx *gin.Context, user_id string, skip, limit int) utils.Result {
+	// var projectInfo []struct {
+	// 	Project         models.Project
+	// 	Connection      connectionModels.Connection
+	// 	MessageProvider messageProviderModels.MessageProvider
+	// }
 
-	// Use ORM to find a project record by ID
-	r := q.ORM.DB.Where("user_id = ?", id).Offset(skip).Limit(limit).Find(&projectsModel)
+	var projectsInfo []map[string]interface{}
+
+	// Use ORM to find project records by user ID with LEFT JOIN on connections and message_providers
+	r := q.ORM.DB.
+		Table("projects").
+		Select("projects.*, connections.*, message_providers.*").
+		Joins("LEFT JOIN connections ON connections.connection_project_id = projects.project_id").
+		Joins("LEFT JOIN message_providers ON message_providers.message_provider_id = connections.connection_message_provider_id").
+		Where("projects.project_user_id = ?", user_id).
+		Offset(skip).
+		Limit(limit).
+		Scan(&projectsInfo)
 
 	// Prepare the result, including retrieved project data and database operation result
 	output := utils.Result{
-		Data: projectsModel,
+		Data: projectsInfo,
 		DB:   r,
 	}
 	return output
-
 }

@@ -55,10 +55,10 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
 	}
-	messageProviderModel.User_id = claims["id"].(string)
+	messageProviderModel.MessageProviderUserID = claims["id"].(string)
 
-	// Generate a unique ID for messageprovider
-	messageProviderModel.ID = uuid.NewString()
+	// Generate a unique MessageProviderID for messageprovider
+	messageProviderModel.MessageProviderID = uuid.NewString()
 
 	// Create messageprovider record in the database
 
@@ -99,7 +99,7 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, "input field not valid")
 	}
 
-	messageProviderModel.ID = messageProviderID
+	messageProviderModel.MessageProviderID = messageProviderID
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
@@ -121,7 +121,7 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
 	}
-	messageProviderModel.User_id = claims["id"].(string)
+	messageProviderModel.MessageProviderUserID = claims["id"].(string)
 
 	// Response data for successful registration
 	Response := messageProviderModel
@@ -135,7 +135,7 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 
 	if r.DB.RowsAffected == 0 {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Message Provider ID not available"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Message Provider MessageProviderID not available"})
 		return
 	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data

@@ -323,7 +323,7 @@ func (q QueryUsecase) GetConnectedUserOwned(ctx *gin.Context) {
 		return
 	}
 
-	getProjectData := q.ProjectRepositoryQuery.FindByUserID(ctx, id, skip, limit)
+	getProjectData := q.ProjectRepositoryQuery.FindConnectedByUserID(ctx, id, skip, limit)
 	if getProjectData.DB.Error != nil {
 		ctx.AbortWithStatusJSON(result.Code, result)
 		return

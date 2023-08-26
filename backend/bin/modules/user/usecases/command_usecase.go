@@ -48,8 +48,8 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 		return
 	}
 
-	// Generate a unique ID for user
-	userModel.ID = uuid.NewString()
+	// Generate a unique UserID for user
+	userModel.UserID = uuid.NewString()
 
 	// Capitalize first letter of user's name
 	userModel.Name = strings.Title(userModel.Name)
@@ -116,7 +116,7 @@ func (q CommandUsecase) PostRegister(ctx *gin.Context) {
 
 	// Response data for successful registration
 	userRegisterResponse := models.RegisterResponse{
-		ID:       userModel.ID,
+		UserID:   userModel.UserID,
 		Name:     userModel.Name,
 		Username: userModel.Username,
 		Email:    userModel.Email,
@@ -189,7 +189,7 @@ func (q CommandUsecase) PostLogin(ctx *gin.Context) {
 
 	// Create a new instance of LoginResponse model, initializing its fields with data
 	userLoginResponse := models.LoginResponse{
-		ID:          r.Data.ID,
+		UserID:      r.Data.UserID,
 		Email:       r.Data.Email,
 		Name:        r.Data.Name,
 		Username:    r.Data.Username,

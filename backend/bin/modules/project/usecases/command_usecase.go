@@ -63,10 +63,10 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
 	}
-	projectModel.User_id = claims["id"].(string)
+	projectModel.ProjectUserID = claims["id"].(string)
 
-	// Generate a unique ID for project
-	projectModel.ID = uuid.NewString()
+	// Generate a unique ProjectID for project
+	projectModel.ProjectID = uuid.NewString()
 
 	// Capitalize first letter of project's name
 	projectModel.Name = strings.Title(projectModel.Name)
@@ -95,9 +95,9 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 
 	// Response data for successful registration
 	projectRegisterResponse := models.PostProjectResponse{
-		ID:      projectModel.ID,
-		Name:    projectModel.Name,
-		User_id: projectModel.User_id,
+		ProjectID:     projectModel.ProjectID,
+		Name:          projectModel.Name,
+		ProjectUserID: projectModel.ProjectUserID,
 	}
 
 	// Save project record again after successful registration
@@ -123,7 +123,7 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 	}
 
-	projectModel.ID = projectID
+	projectModel.ProjectID = projectID
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
@@ -145,7 +145,7 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 	if !ok {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
 	}
-	projectModel.User_id = claims["id"].(string)
+	projectModel.ProjectUserID = claims["id"].(string)
 
 	// Response data for successful registration
 	Response := projectModel
@@ -159,7 +159,7 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 
 	if r.DB.RowsAffected == 0 {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Project ID not available"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Project ProjectID not available"})
 		return
 	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data

@@ -37,11 +37,11 @@ func (q QueryRepository) FindAll(ctx *gin.Context, skip, limit int) utils.Result
 	return output
 
 }
-func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
+func (q QueryRepository) FindOneByID(ctx *gin.Context, connection_id string) utils.Result {
 	var connectionModel models.Connection
 
 	// Use ORM to find a connection record by ID
-	r := q.ORM.DB.First(&connectionModel, "id = ?", id)
+	r := q.ORM.DB.First(&connectionModel, "connection_id = ?", connection_id)
 	// Prepare the result, including retrieved connection data and database operation result
 	output := utils.Result{
 		Data: connectionModel,
@@ -51,11 +51,11 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 
 }
 
-func (q QueryRepository) FindOneByProjectID(ctx *gin.Context, id string) utils.Result {
+func (q QueryRepository) FindOneByProjectID(ctx *gin.Context, project_id string) utils.Result {
 	var connectionModel models.Connection
 
 	// Use ORM to find a connection record by ID
-	r := q.ORM.DB.First(&connectionModel, "project_id = ?", id)
+	r := q.ORM.DB.First(&connectionModel, "project_id = ?", project_id)
 	// Prepare the result, including retrieved connection data and database operation result
 	output := utils.Result{
 		Data: connectionModel,
@@ -65,11 +65,11 @@ func (q QueryRepository) FindOneByProjectID(ctx *gin.Context, id string) utils.R
 
 }
 
-func (q QueryRepository) FindOneByMessageProviderID(ctx *gin.Context, id string) utils.Result {
+func (q QueryRepository) FindOneByMessageProviderID(ctx *gin.Context, message_provider_id string) utils.Result {
 	var connectionModel models.Connection
 
 	// Use ORM to find a connection record by ID
-	r := q.ORM.DB.First(&connectionModel, "message_provider_id = ?", id)
+	r := q.ORM.DB.First(&connectionModel, "message_provider_id = ?", message_provider_id)
 	// Prepare the result, including retrieved connection data and database operation result
 	output := utils.Result{
 		Data: connectionModel,
