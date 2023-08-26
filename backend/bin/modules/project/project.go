@@ -9,10 +9,10 @@ import (
 
 type UsecaseQuery interface {
 	GetByID(ctx *gin.Context)
-	GetConnectedByID(ctx *gin.Context)
 	GetAccess(ctx *gin.Context)
 	GetAll(ctx *gin.Context)
 	GetUserOwned(ctx *gin.Context)
+	GetConnectedByID(ctx *gin.Context)
 	GetConnectedUserOwned(ctx *gin.Context)
 }
 
