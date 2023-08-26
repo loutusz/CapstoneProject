@@ -136,12 +136,6 @@ func (q QueryRepository) FindByUserID(ctx *gin.Context, user_id string, skip, li
 }
 
 func (q QueryRepository) FindConnectedByUserID(ctx *gin.Context, user_id string, skip, limit int) utils.Result {
-	// var projectInfo []struct {
-	// 	Project         models.Project
-	// 	Connection      connectionModels.Connection
-	// 	MessageProvider messageProviderModels.MessageProvider
-	// }
-
 	var projectsInfo []map[string]interface{}
 
 	// Use ORM to find project records by user ID with LEFT JOIN on connections and message_providers
