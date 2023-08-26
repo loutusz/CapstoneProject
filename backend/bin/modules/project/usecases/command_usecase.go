@@ -67,10 +67,10 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 		result.Message = "Invalid Claims"
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
-	projectModel.User_id = claims["id"].(string)
+	projectModel.ProjectUserID = claims["id"].(string)
 
-	// Generate a unique ID for project
-	projectModel.ID = uuid.NewString()
+	// Generate a unique ProjectID for project
+	projectModel.ProjectID = uuid.NewString()
 
 	// Capitalize first letter of project's name
 	projectModel.Name = strings.Title(projectModel.Name)
@@ -99,9 +99,9 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 
 	// Response data for successful registration
 	projectRegisterResponse := models.PostProjectResponse{
-		ID:      projectModel.ID,
-		Name:    projectModel.Name,
-		User_id: projectModel.User_id,
+		ProjectID:     projectModel.ProjectID,
+		Name:          projectModel.Name,
+		ProjectUserID: projectModel.ProjectUserID,
 	}
 
 	// Save project record again after successful registration
@@ -132,16 +132,17 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 		Status:  false,
 	}
 
-	projectID := ctx.Param("id")
+	var id string = ctx.Param("id")
 
 	var projectModel models.Project
 
 	err := ctx.ShouldBind(&projectModel)
 	if err != nil {
+		result.Code = http.StatusBadRequest
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
-	projectModel.ID = projectID
+	projectModel.ProjectID = id
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
@@ -166,7 +167,7 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 		result.Message = "Invalid Claims"
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
-	projectModel.User_id = claims["id"].(string)
+	projectModel.ProjectUserID = claims["id"].(string)
 
 	// Response data for successful registration
 	Response := projectModel
@@ -180,7 +181,7 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 	}
 
 	if r.DB.RowsAffected == 0 {
-		// If there was an error, return Internal Server Error with error message
+		result.Message = "Changes not Saved"
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}

@@ -60,9 +60,9 @@ func (c *CommandRepository) FindPassword(ctx *gin.Context, u string) utils.FindP
 	return output
 }
 
-func (c *CommandRepository) Delete(ctx *gin.Context, id string) utils.Result {
+func (c *CommandRepository) Delete(ctx *gin.Context, user_id string) utils.Result {
 	var userModel models.User
-	recordset := c.ORM.DB.Delete(&userModel, "id = ?", id)
+	recordset := c.ORM.DB.Delete(&userModel, "user_id = ?", user_id)
 
 	output := utils.Result{
 		Data: userModel,

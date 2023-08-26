@@ -66,10 +66,10 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 		result.Message = "Invalid claims"
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
-	messageProviderModel.User_id = claims["id"].(string)
+	messageProviderModel.MessageProviderUserID = claims["id"].(string)
 
-	// Generate a unique ID for messageprovider
-	messageProviderModel.ID = uuid.NewString()
+	// Generate a unique MessageProviderID for messageprovider
+	messageProviderModel.MessageProviderID = uuid.NewString()
 
 	// Create messageprovider record in the database
 
@@ -125,7 +125,7 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
-	messageProviderModel.ID = messageProviderID
+	messageProviderModel.MessageProviderID = messageProviderID
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
@@ -152,7 +152,7 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 		result.Message = "Invalid claims"
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
-	messageProviderModel.User_id = claims["id"].(string)
+	messageProviderModel.MessageProviderUserID = claims["id"].(string)
 
 	// Response data for successful registration
 	Response := messageProviderModel

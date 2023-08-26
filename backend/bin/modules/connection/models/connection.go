@@ -1,35 +1,42 @@
 package models
 
+import (
+	messageProviderModels "login-api-jwt/bin/modules/messageprovider/models"
+	projectModels "login-api-jwt/bin/modules/project/models"
+)
+
 type Connection struct {
-	ID                  string `json:"id"`
-	Project_id          string `json:"project_id" form:"project_id"`
-	Message_provider_id string `json:"message_provider_id" form:"message_provider_id"`
+	ConnectionID                string                                `json:"id" gorm:"primaryKey;column:connection_id"`
+	ConnectionProjectID         string                                `json:"project_id" form:"project_id"`
+	ConnectionMessageProviderID string                                `json:"message_provider_id" form:"message_provider_id"`
+	MessageProvider             messageProviderModels.MessageProvider `gorm:"foreignkey:ConnectionMessageProviderID"`
+	Project                     projectModels.Project                 `gorm:"foreignkey:ConnectionMessageProviderID"`
 }
 
 type UpsertConnection struct {
-	Project_id          string `json:"project_id" form:"project_id"`
-	Message_provider_id string `json:"message_provider_id" form:"message_provider_id"`
+	ConnectionProjectID         string `json:"project_id" form:"project_id"`
+	ConnectionMessageProviderID string `json:"message_provider_id" form:"message_provider_id"`
 }
 
 func (p Connection) UpsertConnection() UpsertConnection {
 	return UpsertConnection{
-		Message_provider_id: p.Message_provider_id,
-		Project_id:          p.Project_id,
+		ConnectionMessageProviderID: p.ConnectionMessageProviderID,
+		ConnectionProjectID:         p.ConnectionProjectID,
 	}
 }
 
 type GetConnectionRequest struct {
-	ID string `json:"id"`
+	ConnectionID string `json:"id"`
 }
 
 type GetConnectionResponse struct {
-	ID                  string `json:"id"`
-	Project_id          string `json:"project_id"`
-	Message_provider_id string `json:"message_provider_id"`
+	ConnectionID                string `json:"id"`
+	ConnectionProjectID         string `json:"project_id"`
+	ConnectionMessageProviderID string `json:"message_provider_id"`
 }
 
 type PostConnectionResponse struct {
-	ID                  string `json:"id"`
-	Project_id          string `json:"project_id"`
-	Message_provider_id string `json:"message_provider_id"`
+	ConnectionID                string `json:"id"`
+	ConnectionProjectID         string `json:"project_id"`
+	ConnectionMessageProviderID string `json:"message_provider_id"`
 }

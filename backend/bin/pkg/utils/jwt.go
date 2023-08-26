@@ -17,7 +17,7 @@ func GenerateUserJWT(u models.User) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 
 	// Set claims in JWT token payload
-	claims["id"] = u.ID
+	claims["id"] = u.UserID
 	claims["username"] = u.Username
 	claims["name"] = u.Name
 	claims["email"] = u.Email
