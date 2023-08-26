@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"errors"
-	"fmt"
 	"login-api-jwt/bin/modules/messageprovider"
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/utils"
@@ -32,6 +31,12 @@ func NewQueryUsecase(q messageprovider.RepositoryQuery, orm *databases.ORM) mess
 
 // GetByID retrieves messageprovider data by ID and responds with the result
 func (q QueryUsecase) GetByID(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Get Provider",
+		Status:  false,
+	}
 	id := ctx.Param("id")
 
 	// Call FindOneByID method to retrieve messageprovider data by ID
@@ -40,17 +45,22 @@ func (q QueryUsecase) GetByID(ctx *gin.Context) {
 	if ret.DB.Error != nil {
 		if errors.Is(ret.DB.Error, gorm.ErrRecordNotFound) {
 			// If data is not found in the database, abort with status Unauthorized
-			ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("MessageProvider with id %s not found", id)})
+			result.Code = http.StatusNotFound
+			ctx.AbortWithStatusJSON(result.Code, result)
 			return
 		}
-
-		ctx.AbortWithError(http.StatusBadRequest, ret.DB.Error)
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
 	// Respond with retrieved messageprovider data in JSON format
-	res := ret.Data
-	ctx.JSON(http.StatusOK, res)
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    ret.Data,
+		Message: "Success Get Provider",
+		Status:  true,
+	}
+	ctx.JSON(http.StatusOK, result)
 }
 
 // Get All retrieves All messageprovider data with pagination result
@@ -122,7 +132,6 @@ func (q QueryUsecase) GetAll(ctx *gin.Context) {
 		Status:    true,
 	}
 	ctx.JSON(http.StatusOK, result)
-	return
 }
 
 // GetAccess responds with a success message indicating messageprovider access
@@ -131,13 +140,22 @@ func (q QueryUsecase) GetAccess(ctx *gin.Context) {
 }
 
 func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Get MessageProvider",
+		Status:  false,
+	}
+
 	id := ctx.Param("id")
 	var totalCount, page, limit int
 	var err error
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		result.Code = http.StatusUnauthorized
+		result.Message = "Token Required"
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -146,9 +164,12 @@ func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
 
 	if err != nil {
 		if err.Error() == "invalid token" {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			result.Code = http.StatusBadRequest
+			result.Message = "Token is expired"
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		}
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
 	page, err = strconv.Atoi(ctx.Query("page"))
@@ -180,7 +201,7 @@ func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
 
 	// set skip for offset data
 	var skip = limit * (page - 1)
-	var result utils.ResultResponsePagination = utils.ResultResponsePagination{
+	var resultPagination utils.ResultResponsePagination = utils.ResultResponsePagination{
 		Code:      http.StatusBadRequest,
 		Data:      nil,
 		Limit:     limit,
@@ -192,19 +213,19 @@ func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
 	}
 
 	if totalCount == 0 {
-		result.Code = http.StatusNotFound
-		result.Message = "Data Not Found"
-		ctx.AbortWithStatusJSON(result.Code, result)
+		resultPagination.Code = http.StatusNotFound
+		resultPagination.Message = "Data Not Found"
+		ctx.AbortWithStatusJSON(resultPagination.Code, resultPagination)
 		return
 	}
 
 	getMessageProviderData := q.MessageProviderRepositoryQuery.FindByUserID(ctx, id, skip, limit)
 	if getMessageProviderData.DB.Error != nil {
-		ctx.AbortWithStatusJSON(result.Code, result)
+		ctx.AbortWithStatusJSON(resultPagination.Code, resultPagination)
 		return
 	}
 
-	result = utils.ResultResponsePagination{
+	resultPagination = utils.ResultResponsePagination{
 		Code:      http.StatusOK,
 		Data:      getMessageProviderData.Data,
 		Limit:     limit,
@@ -214,6 +235,5 @@ func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
 		Message:   "Success Get Owned Data MessageProvider",
 		Status:    true,
 	}
-	ctx.JSON(http.StatusOK, result)
-	return
+	ctx.JSON(resultPagination.Code, resultPagination)
 }

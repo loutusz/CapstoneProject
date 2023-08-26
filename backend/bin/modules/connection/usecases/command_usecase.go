@@ -62,7 +62,7 @@ func (q CommandUsecase) PostConnection(ctx *gin.Context) {
 			return
 		}
 		result.Code = http.StatusInternalServerError
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -79,19 +79,34 @@ func (q CommandUsecase) PostConnection(ctx *gin.Context) {
 	// Check if an error occurred while saving
 	if r.DB.Error != nil {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, result)
 		return
+	}
+
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    r.Data,
+		Message: "Success Post Connection",
+		Status:  true,
 	}
 	// If connection record was successfully saved, respond with connection's registration data
 	ctx.JSON(http.StatusOK, connectionRegisterResponse)
 }
 
 func (q CommandUsecase) PutConnection(ctx *gin.Context) {
+	var result = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Update Data Connection",
+		Status:  false,
+	}
+
 	connectionID := ctx.Param("id")
 	var connectionModel models.Connection
 	err := ctx.ShouldBind(&connectionModel)
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
 	connectionModel.ID = connectionID
@@ -102,14 +117,23 @@ func (q CommandUsecase) PutConnection(ctx *gin.Context) {
 	r := q.ConnectionRepositoryCommand.Updates(ctx, Response)
 	if r.DB.Error != nil {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
 	if r.DB.RowsAffected == 0 {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Connection ID not available"})
+		result.Code = http.StatusNotFound
+		result.Message = "Data not found"
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
+	}
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    r.Data,
+		Message: "Success Get Data Connection",
+		Status:  true,
 	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data
 	ctx.JSON(http.StatusOK, Response)
