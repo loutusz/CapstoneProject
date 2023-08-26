@@ -45,7 +45,9 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		result.Code = http.StatusUnauthorized
+		result.Message = "Token Required"
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -54,14 +56,16 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 
 	if err != nil {
 		if err.Error() == "invalid token" {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			ctx.AbortWithStatusJSON(result.Code, result)
 		}
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+		result.Message = "Invalid Claims"
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 	projectModel.ProjectUserID = claims["id"].(string)
 
@@ -89,7 +93,7 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 			return
 		}
 		result.Code = http.StatusInternalServerError
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -106,28 +110,44 @@ func (q CommandUsecase) PostProject(ctx *gin.Context) {
 	// Check if an error occurred while saving
 	if r.DB.Error != nil {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    projectRegisterResponse,
+		Message: "Success Post Project",
+		Status:  true,
+	}
 	// If project record was successfully saved, respond with project's registration data
-	ctx.JSON(http.StatusOK, projectRegisterResponse)
+	ctx.JSON(result.Code, result)
 }
 
 func (q CommandUsecase) PutProject(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Update Project",
+		Status:  false,
+	}
+
 	projectID := ctx.Param("id")
 
 	var projectModel models.Project
 
 	err := ctx.ShouldBind(&projectModel)
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
 	projectModel.ProjectID = projectID
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		result.Code = http.StatusUnauthorized
+		result.Message = "Token Required"
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -143,7 +163,8 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+		result.Message = "Invalid Claims"
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 	projectModel.ProjectUserID = claims["id"].(string)
 
@@ -153,17 +174,24 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 	r := q.ProjectRepositoryCommand.Updates(ctx, Response)
 	if r.DB.Error != nil {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
 	if r.DB.RowsAffected == 0 {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Project ProjectID not available"})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    Response,
+		Message: "Success Update Project",
+		Status:  true,
+	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data
-	ctx.JSON(http.StatusOK, Response)
+	ctx.JSON(http.StatusOK, result)
 
 }
 

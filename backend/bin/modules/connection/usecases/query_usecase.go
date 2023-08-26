@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"errors"
-	"fmt"
 	"login-api-jwt/bin/modules/connection"
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/utils"
@@ -31,6 +30,12 @@ func NewQueryUsecase(q connection.RepositoryQuery, orm *databases.ORM) connectio
 
 // GetByID retrieves connection data by ID and responds with the result
 func (q QueryUsecase) GetByID(ctx *gin.Context) {
+	var result = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Get Data Connection",
+		Status:  false,
+	}
 	id := ctx.Param("id")
 
 	// Call FindOneByID method to retrieve connection data by ID
@@ -39,17 +44,25 @@ func (q QueryUsecase) GetByID(ctx *gin.Context) {
 	if ret.DB.Error != nil {
 		if errors.Is(ret.DB.Error, gorm.ErrRecordNotFound) {
 			// If data is not found in the database, abort with status Unauthorized
-			ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("Connection with id %s not found", id)})
+			result.Code = http.StatusNotFound
+			result.Message = "Data not found"
+			ctx.AbortWithStatusJSON(result.Code, result)
 			return
 		}
 
-		ctx.AbortWithError(http.StatusBadRequest, ret.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
 	// Respond with retrieved connection data in JSON format
-	res := ret.Data
-	ctx.JSON(http.StatusOK, res)
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    ret.Data,
+		Message: "Success Get Data Connection",
+		Status:  true,
+	}
+	ctx.JSON(http.StatusOK, result)
 }
 
 // Get All retrieves All connection data with pagination result
