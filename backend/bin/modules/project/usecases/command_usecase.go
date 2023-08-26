@@ -132,16 +132,17 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 		Status:  false,
 	}
 
-	projectID := ctx.Param("id")
+	var id string = ctx.Param("id")
 
 	var projectModel models.Project
 
 	err := ctx.ShouldBind(&projectModel)
 	if err != nil {
+		result.Code = http.StatusBadRequest
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
-	projectModel.ProjectID = projectID
+	projectModel.ProjectID = id
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
@@ -180,7 +181,7 @@ func (q CommandUsecase) PutProject(ctx *gin.Context) {
 	}
 
 	if r.DB.RowsAffected == 0 {
-		// If there was an error, return Internal Server Error with error message
+		result.Message = "Changes not Saved"
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}
