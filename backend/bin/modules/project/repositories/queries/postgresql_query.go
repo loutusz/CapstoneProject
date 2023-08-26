@@ -1,12 +1,16 @@
 package queries
 
 import (
+	connectionModels "login-api-jwt/bin/modules/connection/models"
+	messageProviderModels "login-api-jwt/bin/modules/messageprovider/models"
 	"login-api-jwt/bin/modules/project"
 	"login-api-jwt/bin/modules/project/models"
+
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // QueryRepository implements project.RepositoryQuery interface
@@ -51,6 +55,59 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 	return output
 
 }
+
+func (q QueryRepository) FindConnectedOneByID(ctx *gin.Context, id string) utils.Result {
+	var projectModel models.Project
+	// Define the structs for the connection and provider
+	var connectionModel connectionModels.Connection
+	var providerModel messageProviderModels.MessageProvider
+
+	// Use ORM to find a project record by ID
+	r := q.ORM.DB.First(&projectModel, "id = ?", id)
+	connector := struct {
+		Data    interface{}
+		Message string
+	}{
+		Message: "found",
+		Data:    &connectionModel,
+	}
+
+	provider := struct {
+		Data    interface{}
+		Message string
+	}{
+		Message: "found",
+		Data:    &providerModel,
+	}
+
+	if q.ORM.DB.First(&connectionModel, "project_id = ?", id).Error == gorm.ErrRecordNotFound {
+		connector.Message = "record not found"
+
+	}
+
+	// Use ORM to find a provider record by provider ID
+	if q.ORM.DB.First(&providerModel, "id = ?", connectionModel.Message_provider_id).Error == gorm.ErrRecordNotFound {
+		// Handle the case when provider data is not found
+		provider.Message = "record not found"
+	}
+
+	// Prepare the result
+	output := utils.Result{
+		Data: struct {
+			Project   models.Project
+			Connector interface{}
+			Provider  interface{}
+		}{
+			Project:   projectModel,
+			Connector: connector,
+			Provider:  provider,
+		},
+		DB: r,
+	}
+
+	return output
+}
+
 func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
 	var projectModel models.Project
 	var count int64
@@ -64,6 +121,21 @@ func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
 }
 
 func (q QueryRepository) FindByUserID(ctx *gin.Context, id string, skip, limit int) utils.Result {
+	var projectsModel []models.Project
+
+	// Use ORM to find a project record by ID
+	r := q.ORM.DB.Where("user_id = ?", id).Offset(skip).Limit(limit).Find(&projectsModel)
+
+	// Prepare the result, including retrieved project data and database operation result
+	output := utils.Result{
+		Data: projectsModel,
+		DB:   r,
+	}
+	return output
+
+}
+
+func (q QueryRepository) FindConnectedByUserID(ctx *gin.Context, id string, skip, limit int) utils.Result {
 	var projectsModel []models.Project
 
 	// Use ORM to find a project record by ID
