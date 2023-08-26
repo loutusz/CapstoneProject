@@ -1,8 +1,6 @@
 package queries
 
 import (
-	connectionModels "login-api-jwt/bin/modules/connection/models"
-	messageProviderModels "login-api-jwt/bin/modules/messageprovider/models"
 	"login-api-jwt/bin/modules/project"
 	"login-api-jwt/bin/modules/project/models"
 
@@ -10,7 +8,6 @@ import (
 	"login-api-jwt/bin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
 // QueryRepository implements project.RepositoryQuery interface
@@ -57,52 +54,22 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, project_id string) utils.
 }
 
 func (q QueryRepository) FindConnectedOneByID(ctx *gin.Context, project_id string) utils.Result {
-	var projectModel models.Project
-	// Define the structs for the connection and provider
-	var connectionModel connectionModels.Connection
-	var providerModel messageProviderModels.MessageProvider
+	var projectInfo []map[string]interface{}
 
-	// Use ORM to find a project record by ID
-	r := q.ORM.DB.First(&projectModel, "project_id = ?", project_id)
-	connector := struct {
-		Data    interface{}
-		Message string
-	}{
-		Message: "found",
-		Data:    &connectionModel,
-	}
+	// Use ORM to find project records by user ID with LEFT JOIN on connections and message_providers
+	r := q.ORM.DB.
+		Table("projects").
+		Select("projects.*, connections.*, message_providers.*").
+		Joins("LEFT JOIN connections ON connections.connection_project_id = projects.project_id").
+		Joins("LEFT JOIN message_providers ON message_providers.message_provider_id = connections.connection_message_provider_id").
+		Where("projects.project_id = ?", project_id).
+		Scan(&projectInfo)
 
-	provider := struct {
-		Data    interface{}
-		Message string
-	}{
-		Message: "found",
-		Data:    &providerModel,
-	}
-
-	if q.ORM.DB.First(&connectionModel, "connection_project_id = ?", project_id).Error == gorm.ErrRecordNotFound {
-		connector.Message = "record not found"
-
-	}
-
-	// Use ORM to find a provider record by provider ID
-	if q.ORM.DB.First(&providerModel, "message_provider_id = ?", connectionModel.ConnectionMessageProviderID).Error == gorm.ErrRecordNotFound {
-		// Handle the case when provider data is not found
-		provider.Message = "record not found"
-	}
-
+	// Prepare the result, including retrieved project data and database operation result
 	// Prepare the result
 	output := utils.Result{
-		Data: struct {
-			Project   models.Project
-			Connector interface{}
-			Provider  interface{}
-		}{
-			Project:   projectModel,
-			Connector: connector,
-			Provider:  provider,
-		},
-		DB: r,
+		Data: projectInfo,
+		DB:   r,
 	}
 
 	return output
