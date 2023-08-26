@@ -206,7 +206,9 @@ func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
 			result.Message = "Token is expired"
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		}
+		result.Message = "Internal Server Error"
 		result.Code = http.StatusInternalServerError
+		ctx.Error(err)
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
@@ -303,7 +305,9 @@ func (q QueryUsecase) GetConnectedUserOwned(ctx *gin.Context) {
 			result.Message = "Token is Expired"
 			ctx.AbortWithStatusJSON(result.Code, result)
 		}
+		result.Message = "Internal Server Error"
 		result.Code = http.StatusInternalServerError
+		ctx.Error(err)
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
@@ -357,7 +361,7 @@ func (q QueryUsecase) GetConnectedUserOwned(ctx *gin.Context) {
 	getProjectData := q.MessageProviderRepositoryQuery.FindConnectedByUserID(ctx, id, skip, limit)
 	if getProjectData.DB.Error != nil {
 		result.Code = http.StatusInternalServerError
-		result.Message = "Failed Get Data MessageProvider"
+		result.Message = "Internal Server Error"
 		ctx.Error(getProjectData.DB.Error)
 		ctx.AbortWithStatusJSON(result.Code, resultPagination)
 		return
