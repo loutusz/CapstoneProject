@@ -29,15 +29,23 @@ func NewCommandUsecase(q messageprovider.RepositoryCommand, orm *databases.ORM) 
 
 // PostRegister handles messageprovider registration
 func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
+	var result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    nil,
+		Message: "Failed Post Message Provider",
+		Status:  false,
+	}
 	var messageProviderModel models.MessageProvider
 	err := ctx.ShouldBind(&messageProviderModel)
 	if err != nil {
-		ctx.AbortWithError(http.StatusBadRequest, err)
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		result.Code = http.StatusUnauthorized
+		result.Message = "Token Required"
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -46,14 +54,17 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 
 	if err != nil {
 		if err.Error() == "invalid token" {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			result.Message = "Token is Expired"
+			ctx.AbortWithStatusJSON(result.Code, result)
 		}
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+		result.Message = "Invalid claims"
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 	messageProviderModel.User_id = claims["id"].(string)
 
@@ -66,11 +77,12 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 	if r.DB.Error != nil {
 		if strings.Contains(r.DB.Error.Error(), "insert or update on table \"message_providers\" violates foreign key constraint \"message_providers_messageProvider_id_fkey\"") {
 			// If data is already found, abort with status "email or messageProvidername already used"
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "user id not valid"})
+			result.Message = "User id not valid"
+			ctx.AbortWithStatusJSON(result.Code, result)
 			return
 		}
-
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -83,27 +95,43 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 	// Check if an error occurred while saving
 	if r.DB.Error != nil {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    messageproviderRegisterResponse,
+		Message: "Success Register Data Message Provider",
+		Status:  true,
+	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data
 	ctx.JSON(http.StatusOK, messageproviderRegisterResponse)
 }
 
 func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
+	var result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    nil,
+		Message: "Failed Post Message Provider",
+		Status:  false,
+	}
+
 	messageProviderID := ctx.Param("id")
 	var messageProviderModel models.MessageProvider
 	err := ctx.ShouldBind(&messageProviderModel)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, "input field not valid")
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 
 	messageProviderModel.ID = messageProviderID
 
 	authHeader := ctx.GetHeader("Authorization")
 	if authHeader == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
+		result.Code = http.StatusUnauthorized
+		result.Message = "Token Required"
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
@@ -112,14 +140,17 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 
 	if err != nil {
 		if err.Error() == "invalid token" {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			result.Message = "Token Expired"
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		}
-		ctx.AbortWithError(http.StatusInternalServerError, err)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, result)
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "invalid claims"})
+		result.Message = "Invalid claims"
+		ctx.AbortWithStatusJSON(result.Code, result)
 	}
 	messageProviderModel.User_id = claims["id"].(string)
 
@@ -129,17 +160,25 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 	r := q.MessageProviderRepositoryCommand.Updates(ctx, Response)
 	if r.DB.Error != nil {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithError(http.StatusInternalServerError, r.DB.Error)
+		result.Code = http.StatusInternalServerError
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
 
 	if r.DB.RowsAffected == 0 {
 		// If there was an error, return Internal Server Error with error message
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Message Provider ID not available"})
+		result.Message = "Message Provider ID not available"
+		ctx.AbortWithStatusJSON(result.Code, result)
 		return
 	}
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    Response,
+		Message: "Success Update MessageProvider",
+		Status:  true,
+	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data
-	ctx.JSON(http.StatusOK, Response)
+	ctx.JSON(result.Code, result)
 
 }
 
