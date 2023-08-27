@@ -83,7 +83,7 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 		Status:  true,
 	}
 	// If messageprovider record was successfully saved, respond with messageprovider's registration data
-	ctx.JSON(http.StatusOK, messageproviderRegisterResponse)
+	ctx.JSON(http.StatusOK, result)
 }
 
 func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {

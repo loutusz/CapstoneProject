@@ -86,12 +86,12 @@ func (q CommandUsecase) PostConnection(ctx *gin.Context) {
 
 	result = utils.ResultResponse{
 		Code:    http.StatusOK,
-		Data:    r.Data,
+		Data:    connectionRegisterResponse,
 		Message: "Success Post Connection",
 		Status:  true,
 	}
 	// If connection record was successfully saved, respond with connection's registration data
-	ctx.JSON(http.StatusOK, connectionRegisterResponse)
+	ctx.JSON(http.StatusOK, result)
 }
 
 func (q CommandUsecase) PutConnection(ctx *gin.Context) {
