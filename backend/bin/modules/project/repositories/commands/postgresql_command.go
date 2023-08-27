@@ -1,12 +1,14 @@
 package queries
 
 import (
+	connectionModels "login-api-jwt/bin/modules/connection/models"
 	"login-api-jwt/bin/modules/project"
 	"login-api-jwt/bin/modules/project/models"
 	"login-api-jwt/bin/pkg/databases"
 	"login-api-jwt/bin/pkg/utils"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // CommandRepository implements project.RepositoryCommand interface
@@ -41,6 +43,42 @@ func (c *CommandRepository) Save(ctx *gin.Context, p models.Project) utils.Resul
 	output := utils.Result{
 		Data: p,
 		DB:   r,
+	}
+	return output
+}
+
+func (c *CommandRepository) Updates(ctx *gin.Context, p models.Project) utils.Result {
+
+	r := c.ORM.DB.Updates(&p)
+
+	output := utils.Result{
+		Data: p,
+		DB:   r,
+	}
+	return output
+}
+
+func (c *CommandRepository) Delete(ctx *gin.Context, project_id string) utils.MultiDataResult {
+	var projectModel models.Project
+	var connectionModel connectionModels.Connection
+
+	c.ORM.DB.First(&connectionModel, "connection_project_id = ?", project_id)
+	c.ORM.DB.First(&projectModel, "project_id = ?", project_id)
+
+	connectionRecordset := c.ORM.DB.Delete(&connectionModel, "connection_project_id = ?", project_id)
+	projectRecordset := c.ORM.DB.Delete(&projectModel, "project_id = ?", project_id)
+
+	result := struct {
+		Project    models.Project
+		Connection connectionModels.Connection
+	}{
+		Project:    projectModel,
+		Connection: connectionModel,
+	}
+
+	output := utils.MultiDataResult{
+		Data: result,
+		DB:   []*gorm.DB{connectionRecordset, projectRecordset},
 	}
 	return output
 }

@@ -5,7 +5,11 @@ import (
 	"fmt"
 	"login-api-jwt/bin/modules/user"
 	"login-api-jwt/bin/pkg/databases"
+	"login-api-jwt/bin/pkg/utils"
+	"math"
 	"net/http"
+	"reflect"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -27,25 +31,43 @@ func NewQueryUsecase(q user.RepositoryQuery, orm *databases.ORM) user.UsecaseQue
 
 // GetByID retrieves user data by ID and responds with the result
 func (q QueryUsecase) GetByID(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Get Data User",
+		Status:  false,
+	}
 	id := ctx.Param("id")
 
 	// Call FindOneByID method to retrieve user data by ID
-	ret := q.UserRepositoryQuery.FindOneByID(ctx, id)
+	userData := q.UserRepositoryQuery.FindOneByID(ctx, id)
 	// If there was an error during query, abort with a Bad Request status
-	if ret.DB.Error != nil {
-		if errors.Is(ret.DB.Error, gorm.ErrRecordNotFound) {
+	if userData.DB.Error != nil {
+		if errors.Is(userData.DB.Error, gorm.ErrRecordNotFound) {
+			if errors.Is(userData.DB.Error, gorm.ErrRecordNotFound) {
+				result.Code = http.StatusNotFound
+				result.Message = "Data Not Found"
+				ctx.AbortWithStatusJSON(result.Code, result)
+				return
+			}
 			// If data is not found in the database, abort with status Unauthorized
-			ctx.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": fmt.Sprintf("User with id %s not found", id)})
+			ctx.AbortWithStatusJSON(http.StatusNotFound, result)
 			return
 		}
 
-		ctx.AbortWithError(http.StatusBadRequest, ret.DB.Error)
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
 		return
 	}
 
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    userData.Data,
+		Message: "Success Get Data User",
+		Status:  true,
+	}
+
 	// Respond with retrieved user data in JSON format
-	res := ret.Data
-	ctx.JSON(http.StatusOK, res)
+	ctx.JSON(http.StatusOK, result)
 }
 
 // GetAccess responds with a success message indicating user access
@@ -54,13 +76,107 @@ func (q QueryUsecase) GetAccess(ctx *gin.Context) {
 }
 
 // GetByName retrieves user data by name and responds with the result
-func (q QueryUsecase) GetByName(ctx *gin.Context) {
-	name := ctx.Param("name")
-	fmt.Printf("name access %s", name)
+func (q QueryUsecase) GetByUsername(ctx *gin.Context) {
+	var result utils.ResultResponse = utils.ResultResponse{
+		Code:    http.StatusBadRequest,
+		Data:    nil,
+		Message: "Failed Get Data User",
+		Status:  false,
+	}
+	username := ctx.Param("username")
+	fmt.Printf("username access %s", username)
 
-	// Call FindOneByName method to retrieve user data by name
-	ret := q.UserRepositoryQuery.FindOneByName(ctx, name)
+	// Call FindOneByUsername method to retrieve user data by username
+	userData := q.UserRepositoryQuery.FindOneByUsername(ctx, username)
+	if userData.DB.Error != nil {
+		if errors.Is(userData.DB.Error, gorm.ErrRecordNotFound) {
+			result.Code = http.StatusNotFound
+			result.Message = "Data Not Found"
+			ctx.AbortWithStatusJSON(result.Code, result)
+			return
+		}
 
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	result = utils.ResultResponse{
+		Code:    http.StatusOK,
+		Data:    userData.Data,
+		Message: "Success Get Data User",
+		Status:  true,
+	}
 	// Respond with retrieved user data in JSON format
-	ctx.JSON(http.StatusOK, ret.Data)
+	ctx.JSON(http.StatusOK, result)
+}
+
+// Get All retrieves All user data with pagination result
+func (q QueryUsecase) GetAll(ctx *gin.Context) {
+	var totalCount, page, limit int
+	var err error
+
+	page, err = strconv.Atoi(ctx.Query("page"))
+	// handling when error set default page value 1
+	if err != nil || page < 1 {
+		page = 1
+	}
+
+	// handling when error set default limit value 10
+	limit, err = strconv.Atoi(ctx.Query("limit"))
+	if err != nil || limit == 0 {
+		limit = 10
+	}
+
+	// count data user
+	var count = q.UserRepositoryQuery.CountData(ctx)
+
+	// parsing result count data to Integer
+	if reflect.ValueOf(count.Data).CanInt() {
+		totalCount = int(reflect.ValueOf(count.Data).Int())
+	}
+
+	// calculate total page
+	var totalPage int = int(math.Ceil(float64(totalCount) / float64(limit)))
+	// handling if max total page
+	if page > totalPage {
+		page = totalPage
+	}
+
+	// set skip for offset data
+	var skip = limit * (page - 1)
+	var result utils.ResultResponsePagination = utils.ResultResponsePagination{
+		Code:      http.StatusBadRequest,
+		Data:      nil,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Failed Get Data User",
+		Status:    false,
+	}
+
+	if totalCount == 0 {
+		result.Code = http.StatusNotFound
+		result.Message = "Data Not Found"
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	getUserData := q.UserRepositoryQuery.FindAll(ctx, skip, limit)
+	if getUserData.DB.Error != nil {
+		ctx.AbortWithStatusJSON(result.Code, result)
+		return
+	}
+
+	result = utils.ResultResponsePagination{
+		Code:      http.StatusOK,
+		Data:      getUserData.Data,
+		Limit:     limit,
+		Page:      page,
+		TotalData: totalCount,
+		TotalPage: totalPage,
+		Message:   "Success Get Data User",
+		Status:    true,
+	}
+	ctx.JSON(http.StatusOK, result)
 }
