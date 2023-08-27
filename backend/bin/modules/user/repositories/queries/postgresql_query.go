@@ -22,11 +22,11 @@ func NewQueryRepository(orm *databases.ORM) user.RepositoryQuery {
 }
 
 // FindOneByID retrieves a user record from database by ID
-func (q QueryRepository) FindOneByID(ctx *gin.Context, user_id string) utils.Result {
+func (q QueryRepository) FindOneByID(ctx *gin.Context, id string) utils.Result {
 	var userModel models.User
 
 	// Use ORM to find a user record by ID
-	r := q.ORM.DB.First(&userModel, "user_id = ?", user_id)
+	r := q.ORM.DB.First(&userModel, "id = ?", id)
 	// Prepare the result, including retrieved user data and database operation result
 	output := utils.Result{
 		Data: userModel,
@@ -36,12 +36,12 @@ func (q QueryRepository) FindOneByID(ctx *gin.Context, user_id string) utils.Res
 
 }
 
-// FindOneByUsername retrieves a user record from database by username
-func (q QueryRepository) FindOneByUsername(ctx *gin.Context, username string) utils.Result {
+// FindOneByName retrieves a user record from database by name
+func (q QueryRepository) FindOneByName(ctx *gin.Context, name string) utils.Result {
 	var userModel models.User
 
-	// Use ORM to find a user record by username
-	r := q.ORM.DB.First(&userModel, "username = ?", username)
+	// Use ORM to find a user record by name
+	r := q.ORM.DB.First(&userModel, "name = ?", name)
 	// Prepare the result, including retrieved user data and database operation result
 	output := utils.Result{
 		Data: userModel,
@@ -49,33 +49,4 @@ func (q QueryRepository) FindOneByUsername(ctx *gin.Context, username string) ut
 	}
 	return output
 
-}
-
-// FindOneByID retrieves a user record from database by ID
-
-func (q QueryRepository) FindAll(ctx *gin.Context, skip, limit int) utils.Result {
-	var usersModel []models.User
-
-	// Use ORM to find a user record by ID
-	r := q.ORM.DB.Offset(skip).Limit(limit).Find(&usersModel)
-
-	// Prepare the result, including retrieved user data and database operation result
-	output := utils.Result{
-		Data: usersModel,
-		DB:   r,
-	}
-	return output
-
-}
-
-func (q QueryRepository) CountData(ctx *gin.Context) utils.Result {
-	var userModel models.User
-	var count int64
-	r := q.ORM.DB.Find(&userModel).Count(&count)
-
-	output := utils.Result{
-		Data: count,
-		DB:   r,
-	}
-	return output
 }
