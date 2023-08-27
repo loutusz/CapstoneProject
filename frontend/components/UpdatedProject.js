@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 
 export default function UpdatedProject({ data, onUpdate, onCancel }) {
   const [id, setId] = useState(data.id);
