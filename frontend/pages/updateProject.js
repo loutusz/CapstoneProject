@@ -53,7 +53,7 @@ export default function Home() {
 
         setData(updatedData);
     } catch (err) {
-        console.log('Error Update Data',err)
+        console.log('Update error',err)
     }
 
     // console.log('Updated data:', updatedData);
