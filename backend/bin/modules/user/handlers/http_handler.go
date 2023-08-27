@@ -21,9 +21,7 @@ func InitUserHTTPHandler(uq user.UsecaseQuery, uc user.UsecaseCommand, s *server
 	// These routes are associated with different user-related operations
 	s.Gin.GET("/user/id/:id", handler.UserUsecaseQuery.GetByID)
 	s.Gin.GET("/user/", handler.UserUsecaseQuery.GetAccess)
-	s.Gin.POST("/user/SignUp", handler.UserUsecaseCommand.PostRegister)
-	s.Gin.GET("/user/username/:username", handler.UserUsecaseQuery.GetByUsername)
-	s.Gin.POST("/user/SignIn", handler.UserUsecaseCommand.PostLogin)
-	s.Gin.GET("/user/all", handler.UserUsecaseQuery.GetAll)
-	s.Gin.DELETE("/user/id/:id", handler.UserUsecaseCommand.DeleteUser)
+	s.Gin.POST("/user/register", handler.UserUsecaseCommand.PostRegister)
+	s.Gin.GET("/user/name/:name", handler.UserUsecaseQuery.GetByName)
+	s.Gin.POST("/user/login", handler.UserUsecaseCommand.PostLogin)
 }
