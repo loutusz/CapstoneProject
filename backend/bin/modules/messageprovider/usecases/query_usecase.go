@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"reflect"
 	"strconv"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -178,39 +177,9 @@ func (q QueryUsecase) GetAccess(ctx *gin.Context) {
 }
 
 func (q QueryUsecase) GetUserOwned(ctx *gin.Context) {
-	var result utils.ResultResponse = utils.ResultResponse{
-		Code:    http.StatusBadRequest,
-		Data:    nil,
-		Message: "Failed Get MessageProvider",
-		Status:  false,
-	}
-
 	id := ctx.Param("id")
 	var totalCount, page, limit int
 	var err error
-
-	authHeader := ctx.GetHeader("Authorization")
-	if authHeader == "" {
-		result.Code = http.StatusUnauthorized
-		result.Message = "Token Required"
-		ctx.AbortWithStatusJSON(result.Code, result)
-		return
-	}
-
-	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
-	_, err = utils.ValidateUserJWTToToken(tokenString)
-
-	if err != nil {
-		if err.Error() == "invalid token" {
-			result.Code = http.StatusBadRequest
-			result.Message = "Token is expired"
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
-		}
-		result.Message = "Internal Server Error"
-		result.Code = http.StatusInternalServerError
-		ctx.Error(err)
-		ctx.AbortWithStatusJSON(result.Code, result)
-	}
 
 	page, err = strconv.Atoi(ctx.Query("page"))
 	// handling when error set default page value 1
@@ -289,28 +258,6 @@ func (q QueryUsecase) GetConnectedUserOwned(ctx *gin.Context) {
 	id := ctx.Param("id")
 	var totalCount, page, limit int
 	var err error
-
-	authHeader := ctx.GetHeader("Authorization")
-	if authHeader == "" {
-		result.Code = http.StatusUnauthorized
-		ctx.AbortWithStatusJSON(result.Code, result)
-		return
-	}
-
-	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
-	_, err = utils.ValidateUserJWTToToken(tokenString)
-
-	if err != nil {
-		if err.Error() == "invalid token" {
-			result.Message = "Token is Expired"
-			ctx.AbortWithStatusJSON(result.Code, result)
-		}
-		result.Message = "Internal Server Error"
-		result.Code = http.StatusInternalServerError
-		ctx.Error(err)
-		ctx.AbortWithStatusJSON(result.Code, result)
-	}
-
 	page, err = strconv.Atoi(ctx.Query("page"))
 	// handling when error set default page value 1
 	if err != nil || page < 1 {

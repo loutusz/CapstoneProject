@@ -3,10 +3,13 @@ package utils
 import (
 	"fmt"
 	"login-api-jwt/bin/modules/user/models"
+	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
 func GenerateUserJWT(u models.User) (string, error) {
@@ -43,4 +46,37 @@ func ValidateUserJWTToToken(tokenString string) (*jwt.Token, error) {
 	}
 
 	return token, nil
+}
+
+func JWTAuthVerifyToken(ctx *gin.Context) {
+	var authHeader string = ctx.GetHeader("Authorization")
+	if authHeader == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, ResultResponse{
+			Code:    http.StatusUnauthorized,
+			Data:    nil,
+			Message: "Token Required",
+			Status:  false,
+		})
+		return
+	}
+	token := strings.Split(authHeader, " ")[1]
+	user := jwt.MapClaims{}
+	var secretKey = os.Getenv("JWT_SECRET_KEY")
+	if secretKey == "" {
+		secretKey = "loutusz"
+	}
+	_, err := jwt.ParseWithClaims(token, user, func(t *jwt.Token) (interface{}, error) {
+		return []byte(secretKey), nil
+	})
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, ResultResponse{
+			Code:    http.StatusUnauthorized,
+			Data:    nil,
+			Message: err.Error(),
+			Status:  false,
+		})
+		return
+	}
+	ctx.Set("user", user)
+	ctx.Next()
 }
