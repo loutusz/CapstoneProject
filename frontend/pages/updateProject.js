@@ -22,7 +22,7 @@ export default function Home() {
   useEffect(() => {
     axios.get(`http://localhost:8050/project/id/${project_id}`)
     .then(res => setData(res.data))
-    .catch(err => console.log(err))
+    .catch(err => console.log(err));
     // const fetchDataProduct = async () => {
     //   try {
     //     const resp = await axios.get(`https://dummyjson.com/products/${id}`);
@@ -32,26 +32,26 @@ export default function Home() {
     //   }
     // }
     // fetchDataProduct();
-  },[project_id])
+  },[project_id]);
 
   const handleEdit = (data) => {
     // setSelectedData(data);
-    setData(data)
+    setData(data);
     setShowUpdate(true);
   };
 
   const handleSubmit = async (e) => {  
     try {
         const updatedData = {
-            id,
-            projectname,
-            webhook,
-            provider,
+            id: data.id,
+            projectname: data.name,
+            webhook: data.webhook,
+            provider: data.provider,
         };
 
         await axios.put(`http://localhost:8050/project/edit/{{project_id}}`, updatedData);
 
-        setData(data)
+        setData(updatedData);
     } catch (err) {
         console.log('Error Update Data',err)
     }
