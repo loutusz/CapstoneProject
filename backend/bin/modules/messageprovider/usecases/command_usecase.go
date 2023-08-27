@@ -35,38 +35,14 @@ func (q CommandUsecase) PostMessageProvider(ctx *gin.Context) {
 		Message: "Failed Post Message Provider",
 		Status:  false,
 	}
+
+	user := ctx.MustGet("user").(jwt.MapClaims)
 	var messageProviderModel models.MessageProvider
 	err := ctx.ShouldBind(&messageProviderModel)
 	if err != nil {
 		ctx.AbortWithStatusJSON(result.Code, result)
 	}
-
-	authHeader := ctx.GetHeader("Authorization")
-	if authHeader == "" {
-		result.Code = http.StatusUnauthorized
-		result.Message = "Token Required"
-		ctx.AbortWithStatusJSON(result.Code, result)
-		return
-	}
-
-	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
-	token, err := utils.ValidateUserJWTToToken(tokenString)
-
-	if err != nil {
-		if err.Error() == "invalid token" {
-			result.Message = "Token is Expired"
-			ctx.AbortWithStatusJSON(result.Code, result)
-		}
-		result.Code = http.StatusInternalServerError
-		ctx.AbortWithStatusJSON(result.Code, result)
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		result.Message = "Invalid claims"
-		ctx.AbortWithStatusJSON(result.Code, result)
-	}
-	messageProviderModel.MessageProviderUserID = claims["id"].(string)
+	messageProviderModel.MessageProviderUserID = user["id"].(string)
 
 	// Generate a unique MessageProviderID for messageprovider
 	messageProviderModel.MessageProviderID = uuid.NewString()
@@ -118,6 +94,7 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 		Status:  false,
 	}
 
+	user := ctx.MustGet("user").(jwt.MapClaims)
 	messageProviderID := ctx.Param("id")
 	var messageProviderModel models.MessageProvider
 	err := ctx.ShouldBind(&messageProviderModel)
@@ -126,33 +103,7 @@ func (q CommandUsecase) PutMessageProvider(ctx *gin.Context) {
 	}
 
 	messageProviderModel.MessageProviderID = messageProviderID
-
-	authHeader := ctx.GetHeader("Authorization")
-	if authHeader == "" {
-		result.Code = http.StatusUnauthorized
-		result.Message = "Token Required"
-		ctx.AbortWithStatusJSON(result.Code, result)
-		return
-	}
-
-	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
-	token, err := utils.ValidateUserJWTToToken(tokenString)
-
-	if err != nil {
-		if err.Error() == "invalid token" {
-			result.Message = "Token Expired"
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, result)
-		}
-		result.Code = http.StatusInternalServerError
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, result)
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		result.Message = "Invalid claims"
-		ctx.AbortWithStatusJSON(result.Code, result)
-	}
-	messageProviderModel.MessageProviderUserID = claims["id"].(string)
+	messageProviderModel.MessageProviderUserID = user["id"].(string)
 
 	// Response data for successful registration
 	Response := messageProviderModel
@@ -191,22 +142,6 @@ func (q CommandUsecase) DeleteMessageProvider(ctx *gin.Context) {
 	}
 
 	var id string = ctx.Param("id")
-
-	authHeader := ctx.GetHeader("Authorization")
-	if authHeader == "" {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing"})
-		return
-	}
-
-	tokenString := strings.Replace(authHeader, "Bearer ", "", 1)
-	_, err := utils.ValidateUserJWTToToken(tokenString)
-
-	if err != nil {
-		if err.Error() == "invalid token" {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		}
-		ctx.AbortWithError(http.StatusInternalServerError, err)
-	}
 
 	deletedMessageProvider := q.MessageProviderRepositoryCommand.Delete(ctx, id)
 	if deletedMessageProvider.DB[0].Error != nil {
